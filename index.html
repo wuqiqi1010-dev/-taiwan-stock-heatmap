@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>台股市場雷達 V4.2</title>
+<title>台股市場雷達 V4.3</title>
 <style>
 :root{color-scheme:dark}
 *{box-sizing:border-box}
@@ -47,13 +47,13 @@ a{color:#a9c7ff}
 </head>
 <body>
 <main>
-<h1>台股市場雷達 V4.2</h1>
-<p class="muted">官方上市櫃行情 · 族群熱力圖 · 重點個股雷達</p>
+<h1>台股市場雷達 V4.3</h1>
+<p class="muted">官方上市櫃行情 · 題材熱力圖 · 重點個股雷達</p>
 
 <div class="panel warn note">
-目前使用自訂題材觀察名單，並非交易所正式產業分類。
-領漲與落後僅表示名單內單次行情相對排名，
-不代表投資推薦或已確認趨勢。
+本網站使用自訂題材觀察名單，並非交易所正式產業分類。
+個股列入題材不代表已確認取得相關訂單。
+領漲與落後僅為單次行情的相對排名，不代表投資推薦。
 官方交易日期未驗證前，不得視為當日行情。
 </div>
 
@@ -68,7 +68,11 @@ a{color:#a9c7ff}
 
 <section class="panel">
 <h2>未來主流題材熱力圖</h2>
-<p class="note">每個族群直接顯示領漲股與相對落後股。紅色為上漲，綠色為下跌。</p>
+<p class="note">
+每個族群顯示領漲前三檔及最多兩檔相對落後股。
+領漲與落後不重複。
+紅色為上漲，綠色為下跌。
+</p>
 <div class="toolbar">
 <button id="sortReturn" class="active">平均漲跌</button>
 <button id="sortBreadth">上漲比例</button>
@@ -77,8 +81,8 @@ a{color:#a9c7ff}
 <div id="heatmap" class="heatmap"></div>
 <p class="note">
 族群平均值為名單內有效個股的簡單平均。
-不同族群名單可能重疊。
-成交額是交易金額，不是資金淨流入。
+不同題材可能包含相同股票。
+成交額不是資金淨流入。
 </p>
 </section>
 
@@ -105,14 +109,17 @@ a{color:#a9c7ff}
 
 <script>
 const THEMES={
-"記憶體":["3006","2344","2337","2408","3260"],
-"PCB／載板":["3037","8046","3189","4958","2313"],
-"光通訊":["8086","3363","2455","3081","4979"],
+"記憶體":["3006","2344","2337","2408","3260","8299","4967","2451","6770"],
+"PCB／載板":["3037","8046","3189","4958","2313","2368","3044","5469","2383","6274"],
+"光通訊":["8086","3363","2455","3081","4979","3163","4908","6442","4977"],
 "電子紙":["8069"],
-"太空／衛星":["3491","6285","2314"],
-"無人機／無人載具":["8033","2634","8222"],
-"機器人／自動化":["2049","1590","6188"],
-"電池材料":["4739","4721"]
+"太空／衛星":["3491","6285","2314","2419","2498","5388"],
+"無人機／無人載具":["8033","2634","8222","1584","5371","6166"],
+"機器人／自動化":["2049","1590","6188","2359","2059","4566","6606","1536"],
+"電池材料":["4739","4721","5233","6781"],
+"AI伺服器":["2317","2382","3231","6669","3017","2308"],
+"散熱／液冷":["3017","3324","3653","2421","2436"],
+"半導體設備":["6196","3131","3583","6187","5443"]
 };
 
 let stocks=[];
@@ -283,12 +290,19 @@ empty.textContent="暫無有效漲跌資料";
 section.append(empty);
 }
 
-if(s.ordered.length>1){
+if(s.ordered.length>3){
 const weak=document.createElement("div");
 weak.className="sectionlabel";
-weak.textContent="相對落後觀察";
+weak.textContent="相對落後觀察（不與領漲股重複）";
 section.append(weak);
-appendStockRow(section,s.ordered[s.ordered.length-1]);
+
+const laggards=s.ordered.slice(3).slice(-2).reverse();
+laggards.forEach(x=>appendStockRow(section,x));
+}else{
+const note=document.createElement("div");
+note.className="sectionlabel";
+note.textContent="樣本不足4檔，暫不另列落後股";
+section.append(note);
 }
 
 tile.append(section);
@@ -310,7 +324,7 @@ el("selectedTitle").textContent=selectedTheme+"｜個股觀察";
 
 el("selectedNote").textContent=
 "觀察名單 "+s.codes.length+" 檔；有效行情 "+
-s.members.length+" 檔。依漲跌幅排序。";
+s.valid.length+" 檔。依漲跌幅排序。";
 
 el("themeTable").replaceChildren(
 table([...s.members].sort(
