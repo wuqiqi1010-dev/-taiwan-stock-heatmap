@@ -4,7 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>台股市場雷達 V4.1</title>
+<title>台股市場雷達 V4.2</title>
 <style>
 :root{color-scheme:dark}
 *{box-sizing:border-box}
@@ -29,7 +29,6 @@ button.active{outline:2px solid #dce8ff}
 .negative{background:linear-gradient(145deg,#17664e,#183641)}
 .flat{background:#344056}
 .tile.active{outline:2px solid #dbeafe}
-.tilehead{display:flex;justify-content:space-between;gap:8px;align-items:start}
 .tiletitle{font-size:16px;font-weight:700}
 .tilepct{font-size:27px;font-weight:800;margin:8px 0}
 .tilesub{font-size:12px;opacity:.9;line-height:1.6}
@@ -37,7 +36,6 @@ button.active{outline:2px solid #dce8ff}
 .stockrow{display:flex;align-items:center;justify-content:space-between;gap:7px;margin:7px 0;font-size:12px}
 .stockrow span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .stockrow strong{white-space:nowrap}
-.held{background:#f6c65b;color:#182033;font-size:10px;padding:2px 5px;border-radius:4px;font-weight:700}
 .sectionlabel{font-size:11px;opacity:.8;margin-top:10px}
 input{background:#0c1426;color:white;border:1px solid #46536c;border-radius:9px;padding:12px;width:min(100%,420px)}
 table{border-collapse:collapse;width:100%;font-size:13px}
@@ -49,12 +47,12 @@ a{color:#a9c7ff}
 </head>
 <body>
 <main>
-<h1>台股市場雷達 V4.1</h1>
+<h1>台股市場雷達 V4.2</h1>
 <p class="muted">官方上市櫃行情 · 族群熱力圖 · 重點個股雷達</p>
 
 <div class="panel warn note">
 目前使用自訂題材觀察名單，並非交易所正式產業分類。
-領漲、落後僅表示名單內單次行情相對排名，
+領漲與落後僅表示名單內單次行情相對排名，
 不代表投資推薦或已確認趨勢。
 官方交易日期未驗證前，不得視為當日行情。
 </div>
@@ -70,7 +68,7 @@ a{color:#a9c7ff}
 
 <section class="panel">
 <h2>未來主流題材熱力圖</h2>
-<p class="note">每個族群直接顯示領漲股、落後股及持股標記。紅色為上漲，綠色為下跌。</p>
+<p class="note">每個族群直接顯示領漲股與相對落後股。紅色為上漲，綠色為下跌。</p>
 <div class="toolbar">
 <button id="sortReturn" class="active">平均漲跌</button>
 <button id="sortBreadth">上漲比例</button>
@@ -91,13 +89,8 @@ a{color:#a9c7ff}
 </section>
 
 <section class="panel">
-<h2>十檔持股行情</h2>
-<div id="holdings" class="scroll"></div>
-</section>
-
-<section class="panel">
 <h2>全市場股票查詢</h2>
-<input id="q" placeholder="輸入代號或名稱，例如 3037、欣興">
+<input id="q" placeholder="輸入股票代號或名稱">
 <div id="tablewrap" class="scroll"></div>
 <p id="hint" class="note"></p>
 </section>
@@ -111,12 +104,6 @@ a{color:#a9c7ff}
 </main>
 
 <script>
-const HELD=[
-"8086","3037","8069","2436","6182",
-"5483","3042","3006","8033","4739"
-];
-const heldSet=new Set(HELD);
-
 const THEMES={
 "記憶體":["3006","2344","2337","2408","3260"],
 "PCB／載板":["3037","8046","3189","4958","2313"],
@@ -153,23 +140,12 @@ const n=num(v);
 return n===null?"—":(n>0?"+":"")+fmt(n)+"%";
 }
 
-function stockLabel(x){
-return x.code+" "+x.name;
-}
-
 function appendStockRow(container,x){
 const row=document.createElement("div");
 row.className="stockrow";
 
 const name=document.createElement("span");
-name.textContent=stockLabel(x);
-
-if(heldSet.has(String(x.code))){
-const tag=document.createElement("span");
-tag.className="held";
-tag.textContent="持股";
-name.append(" ",tag);
-}
+name.textContent=x.code+" "+x.name;
 
 const pct=document.createElement("strong");
 pct.textContent=signed(x.pct);
@@ -182,19 +158,23 @@ container.append(row);
 function table(list){
 const t=document.createElement("table");
 const h=document.createElement("tr");
+
 ["代號","名稱","市場","收盤","漲跌%","成交額（元）"]
 .forEach(label=>{
 const th=document.createElement("th");
 th.textContent=label;
 h.append(th);
 });
+
 const head=document.createElement("thead");
 head.append(h);
 t.append(head);
 
 const body=document.createElement("tbody");
+
 list.forEach(x=>{
 const row=document.createElement("tr");
+
 [
 x.code,
 x.name,
@@ -211,8 +191,10 @@ td.className=p>0?"up":p<0?"down":"";
 }
 row.append(td);
 });
+
 body.append(row);
 });
+
 t.append(body);
 return t;
 }
@@ -222,12 +204,16 @@ const members=codes.map(c=>lookup.get(c)).filter(Boolean);
 const valid=members.filter(x=>num(x.pct)!==null);
 const ordered=[...valid].sort((a,b)=>num(b.pct)-num(a.pct));
 const rising=valid.filter(x=>num(x.pct)>0).length;
+
 const average=valid.length?
 valid.reduce((sum,x)=>sum+num(x.pct),0)/valid.length:null;
+
 const breadth=valid.length?rising/valid.length*100:null;
+
 const turnover=members.reduce(
 (sum,x)=>sum+(num(x.turnover)??0),0
 );
+
 return {
 name,codes,members,valid,ordered,
 average,breadth,turnover
@@ -241,6 +227,7 @@ return Object.entries(THEMES)
 
 function renderHeatmap(){
 const stats=allStats();
+
 const key=sortMode==="breadth"?"breadth":
 sortMode==="turnover"?"turnover":"average";
 
@@ -251,10 +238,12 @@ area.replaceChildren();
 
 stats.forEach(s=>{
 const tile=document.createElement("div");
+
 tile.className="tile "+(
 s.average===null||s.average===0?"flat":
 s.average>0?"positive":"negative"
 );
+
 if(s.name===selectedTheme)tile.classList.add("active");
 
 const title=document.createElement("div");
@@ -316,10 +305,13 @@ area.append(tile);
 
 function renderSelected(){
 const s=themeStats(selectedTheme,THEMES[selectedTheme]);
+
 el("selectedTitle").textContent=selectedTheme+"｜個股觀察";
+
 el("selectedNote").textContent=
 "觀察名單 "+s.codes.length+" 檔；有效行情 "+
-s.members.length+" 檔。依漲跌幅排序，持股可在熱力圖中辨識。";
+s.members.length+" 檔。依漲跌幅排序。";
+
 el("themeTable").replaceChildren(
 table([...s.members].sort(
 (a,b)=>(num(b.pct)??-Infinity)-(num(a.pct)??-Infinity)
@@ -327,25 +319,14 @@ table([...s.members].sort(
 );
 }
 
-function renderHoldings(){
-const found=HELD.map(c=>lookup.get(c)).filter(Boolean);
-const box=el("holdings");
-box.replaceChildren(table(found));
-const missing=HELD.filter(c=>!lookup.has(c));
-if(missing.length){
-const p=document.createElement("p");
-p.className="note";
-p.textContent="缺少行情："+missing.join("、");
-box.append(p);
-}
-}
-
 function renderSearch(){
 const q=el("q").value.trim().toLowerCase();
+
 const found=stocks.filter(x=>
 String(x.code).includes(q)||
 String(x.name).toLowerCase().includes(q)
 );
+
 el("tablewrap").replaceChildren(table(found.slice(0,150)));
 el("hint").textContent=
 "符合 "+found.length+" 筆，顯示前 150 筆";
@@ -353,11 +334,14 @@ el("hint").textContent=
 
 function setSort(mode){
 sortMode=mode;
+
 ["return","breadth","turnover"].forEach(k=>{
 const id=k==="return"?"sortReturn":
 k==="breadth"?"sortBreadth":"sortTurnover";
+
 el(id).classList.toggle("active",k===mode);
 });
+
 renderHeatmap();
 }
 
@@ -390,7 +374,6 @@ data.date_verified===true?data.market_date:"未驗證（不可視為當日）"
 
 renderHeatmap();
 renderSelected();
-renderHoldings();
 renderSearch();
 })
 .catch(error=>{
