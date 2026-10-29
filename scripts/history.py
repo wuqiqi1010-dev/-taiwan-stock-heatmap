@@ -1,10 +1,17 @@
 
-"""Archive Taiwan stock quotes with independent date checks."""
+"""Validate and archive Taiwan stock market snapshots.
+
+Fail closed: never count an unverified date.
+"""
 
 import datetime as dt
 import hashlib
+import http.client
 import json
 import pathlib
+import socket
+import time
+import urllib.error
 import urllib.request
 from zoneinfo import ZoneInfo
 
@@ -19,39 +26,104 @@ TPEX_URL = (
     "tpex_mainboard_daily_close_quotes"
 )
 
+HEADERS = {
+    "User-Agent": "Mozilla/5.0",
+    "Accept": "application/json",
+    "Accept-Encoding": "identity",
+    "Connection": "close",
+}
 
-def number(value):
-    try:
-        return float(str(value).strip().replace(",", ""))
-    except (ValueError, TypeError):
+
+def fetch_json(url, attempts=5):
+    for attempt in range(1, attempts + 1):
+        try:
+            req = urllib.request.Request(
+                url, headers=HEADERS
+            )
+            with urllib.request.urlopen(
+                req, timeout=90
+            ) as response:
+                raw = response.read()
+
+            result = json.loads(
+                raw.decode("utf-8-sig")
+            )
+            print(
+                "Download OK:",
+                len(raw),
+                "bytes",
+                flush=True,
+            )
+            return result
+
+        except (
+            http.client.IncompleteRead,
+            urllib.error.URLError,
+            TimeoutError,
+            socket.timeout,
+            ConnectionError,
+            OSError,
+            ValueError,
+        ) as error:
+            print(
+                f"Download failed {attempt}/{attempts}:",
+                repr(error),
+                flush=True,
+            )
+            if attempt == attempts:
+                raise
+            time.sleep(min(attempt * 4, 16))
+
+
+def numeric(value):
+    if value is None:
         return None
-
-
-def roc_date(value):
-    s = str(value or "").strip().replace("/", "")
-    if len(s) != 7 or not s.isdigit():
-        return None
     try:
-        return dt.date(
-            int(s[:3]) + 1911,
-            int(s[3:5]),
-            int(s[5:7]),
+        return float(
+            str(value).strip().replace(",", "")
         )
+    except (TypeError, ValueError):
+        return None
+
+
+def official_date(value):
+    text = str(value or "").strip()
+    text = text.replace("-", "/")
+
+    parts = text.split("/")
+
+    try:
+        if len(parts) == 3:
+            year, month, day = map(int, parts)
+            if year < 1911:
+                year += 1911
+            return dt.date(year, month, day)
+
+        if text.isdigit():
+            if len(text) == 7:
+                return dt.date(
+                    int(text[:3]) + 1911,
+                    int(text[3:5]),
+                    int(text[5:7]),
+                )
+            if len(text) == 8:
+                return dt.date(
+                    int(text[:4]),
+                    int(text[4:6]),
+                    int(text[6:8]),
+                )
     except ValueError:
         return None
 
+    return None
 
-def fetch_json(url):
-    request = urllib.request.Request(
-        url,
-        headers={
-            "User-Agent": "Mozilla/5.0",
-            "Accept": "application/json",
-            "Accept-Encoding": "identity",
-        },
-    )
-    with urllib.request.urlopen(request, timeout=90) as response:
-        return json.loads(response.read().decode("utf-8-sig"))
+
+def first(row, names):
+    for name in names:
+        value = row.get(name)
+        if value not in (None, ""):
+            return value
+    return None
 
 
 def verify_twse(records, day):
@@ -64,59 +136,72 @@ def verify_twse(records, day):
     checks = {}
 
     for code in ("2330", "2317"):
-        record = lookup.get(code)
-        if record is None:
-            checks[code] = {"matched": False}
+        observed = lookup.get(code)
+
+        if observed is None:
+            checks[code] = {
+                "matched": False,
+                "error": "Missing stock in snapshot",
+            }
             continue
 
         url = (
-            "https://www.twse.com.tw/exchangeReport/"
-            f"STOCK_DAY?response=json&date={day:%Y%m%d}"
+            "https://www.twse.com.tw/"
+            "exchangeReport/STOCK_DAY"
+            f"?response=json&date={day:%Y%m%d}"
             f"&stockNo={code}"
         )
 
         try:
             data = fetch_json(url)
-            target = (
-                f"{day.year - 1911}/"
-                f"{day.month:02d}/{day.day:02d}"
-            )
+            status = data.get("stat")
             official = None
+            found_date = False
 
-            if data.get("stat") == "OK":
-                for row in data.get("data", []):
-                    if (
-                        isinstance(row, list)
-                        and len(row) > 6
-                        and str(row[0]).strip() == target
-                    ):
-                        official = number(row[6])
-                        break
+            for row in data.get("data", []):
+                if (
+                    not isinstance(row, list)
+                    or len(row) < 7
+                ):
+                    continue
 
-            observed = number(record.get("close"))
+                if official_date(row[0]) == day:
+                    found_date = True
+                    official = numeric(row[6])
+                    break
+
+            current = numeric(
+                observed.get("close")
+            )
+
             matched = (
-                official is not None
-                and observed is not None
-                and abs(official - observed) < 0.011
+                status == "OK"
+                and found_date
+                and official is not None
+                and current is not None
+                and abs(official - current) < 0.011
             )
 
             checks[code] = {
+                "api_status": status,
+                "date_found": found_date,
                 "official_close": official,
-                "observed_close": observed,
+                "snapshot_close": current,
                 "matched": matched,
             }
 
         except Exception as error:
             checks[code] = {
                 "matched": False,
-                "error": str(error),
+                "error": repr(error),
             }
 
-    return (
-        len(checks) == 2
-        and all(x["matched"] for x in checks.values()),
-        checks,
+    passed = all(
+        checks.get(code, {}).get("matched") is True
+        for code in ("2330", "2317")
     )
+
+    return passed, checks
 
 
 def verify_tpex(records, day):
@@ -130,89 +215,128 @@ def verify_tpex(records, day):
 
     try:
         rows = fetch_json(TPEX_URL)
+
         if not isinstance(rows, list):
-            raise ValueError("TPEx response is not a list")
+            raise ValueError(
+                "TPEx response is not a list"
+            )
 
-        official = {}
+        print(
+            "TPEx response rows:",
+            len(rows),
+            flush=True,
+        )
 
-        for row in rows:
-            if not isinstance(row, dict):
-                continue
+        sample = next(
+            (r for r in rows if isinstance(r, dict)),
+            {},
+        )
 
-            code = str(
-                row.get("SecuritiesCompanyCode")
-                or row.get("SecuritiesCode")
-                or ""
-            ).strip()
-
-            if code in ("8086", "8069"):
-                official[code] = row
+        print(
+            "TPEx available fields:",
+            list(sample.keys()),
+            flush=True,
+        )
 
         for code in ("8086", "8069"):
-            row = official.get(code)
-            record = lookup.get(code)
+            official_row = None
 
-            if row is None or record is None:
-                checks[code] = {"matched": False}
+            for row in rows:
+                if not isinstance(row, dict):
+                    continue
+
+                row_code = str(first(row, [
+                    "SecuritiesCompanyCode",
+                    "SecuritiesCode",
+                    "Code",
+                    "股票代號",
+                    "代號",
+                ]) or "").strip()
+
+                if row_code == code:
+                    official_row = row
+                    break
+
+            observed = lookup.get(code)
+
+            if official_row is None or observed is None:
+                checks[code] = {
+                    "matched": False,
+                    "error": "Reference stock missing",
+                }
                 continue
 
-            official_day = roc_date(row.get("Date"))
-            official_close = number(row.get("Close"))
-            observed_close = number(record.get("close"))
+            raw_date = first(
+                official_row,
+                ["Date", "TradeDate", "資料日期"],
+            )
+            date = official_date(raw_date)
+
+            close = numeric(first(
+                official_row,
+                ["Close", "ClosingPrice", "收盤"],
+            ))
+
+            snapshot_close = numeric(
+                observed.get("close")
+            )
 
             matched = (
-                official_day == day
-                and official_close is not None
-                and observed_close is not None
-                and abs(official_close - observed_close) < 0.011
+                date == day
+                and close is not None
+                and snapshot_close is not None
+                and abs(close - snapshot_close) < 0.011
             )
 
             checks[code] = {
+                "raw_date": raw_date,
                 "official_date": (
-                    official_day.isoformat()
-                    if official_day else None
+                    date.isoformat() if date else None
                 ),
-                "official_close": official_close,
-                "observed_close": observed_close,
+                "official_close": close,
+                "snapshot_close": snapshot_close,
                 "matched": matched,
             }
 
     except Exception as error:
-        checks["error"] = str(error)
+        checks["error"] = repr(error)
 
-    return (
-        all(
-            checks.get(code, {}).get("matched") is True
-            for code in ("8086", "8069")
-        ),
-        checks,
+    passed = all(
+        checks.get(code, {}).get("matched") is True
+        for code in ("8086", "8069")
     )
+
+    return passed, checks
 
 
 def main():
-    data = json.loads(SOURCE.read_text(encoding="utf-8"))
-    records = data.get("records")
+    data = json.loads(
+        SOURCE.read_text(encoding="utf-8")
+    )
 
-    if not isinstance(records, list) or len(records) < 500:
-        raise SystemExit("Incomplete quote data")
-
+    records = data.get("records", [])
     sources = data.get("sources", {})
 
-    if not all(
-        sources.get(market, {}).get("ok")
-        for market in ("TWSE", "TPEx")
-    ):
-        raise SystemExit("Exchange data incomplete")
+    if not isinstance(records, list) or len(records) < 500:
+        raise SystemExit("Incomplete records")
 
-    fetched = dt.datetime.fromisoformat(data["fetched_at"])
+    if not all(
+        sources.get(m, {}).get("ok")
+        for m in ("TWSE", "TPEx")
+    ):
+        raise SystemExit("Official sources incomplete")
+
+    fetched = dt.datetime.fromisoformat(
+        data["fetched_at"]
+    )
 
     if fetched.tzinfo is None:
-        raise SystemExit("Missing fetch timezone")
+        raise SystemExit("Missing timezone")
 
     local = fetched.astimezone(TZ)
 
     if local.hour < 16 or local.weekday() >= 5:
-        print("Outside archive window; skipping")
+        print("Outside archive window")
         return
 
     day = local.date()
@@ -233,10 +357,30 @@ def main():
         ).encode("utf-8")
     ).hexdigest()
 
-    twse_ok, twse_checks = verify_twse(records, day)
-    tpex_ok, tpex_checks = verify_tpex(records, day)
+    twse_ok, twse_checks = verify_twse(
+        records, day
+    )
 
-    fully_verified = twse_ok and tpex_ok
+    tpex_ok, tpex_checks = verify_tpex(
+        records, day
+    )
+
+    verified = twse_ok and tpex_ok
+
+    print(
+        "TWSE checks:",
+        json.dumps(
+            twse_checks, ensure_ascii=False
+        ),
+        flush=True,
+    )
+    print(
+        "TPEx checks:",
+        json.dumps(
+            tpex_checks, ensure_ascii=False
+        ),
+        flush=True,
+    )
 
     DEST.mkdir(exist_ok=True)
 
@@ -247,45 +391,36 @@ def main():
         "observation_date": day.isoformat(),
         "fetched_at": data["fetched_at"],
         "verified_market_date": (
-            day.isoformat() if fully_verified else None
+            day.isoformat() if verified else None
         ),
-        "eligible_for_trading_day_returns": fully_verified,
+        "eligible_for_trading_day_returns": verified,
         "twse_reference_date_verified": twse_ok,
         "twse_reference_checks": twse_checks,
         "tpex_date_verified": tpex_ok,
         "tpex_reference_checks": tpex_checks,
-        "verification_note": (
-            "Both markets independently checked against "
-            "official sources using reference stock prices "
-            "and the applicable trading date."
-            if fully_verified
-            else "Date verification incomplete. Not eligible "
-                 "for full-market trading-day returns."
-        ),
         "quotes_sha256": digest,
         "record_count": len(records),
         "records": records,
     }
 
-    # Preserve an existing verified archive if a later
-    # request fails verification.
+    replace = True
+
     if path.exists():
-        old = json.loads(path.read_text(encoding="utf-8"))
+        old = json.loads(
+            path.read_text(encoding="utf-8")
+        )
         if (
-            old.get("eligible_for_trading_day_returns") is True
-            and not fully_verified
+            old.get(
+                "eligible_for_trading_day_returns"
+            ) is True
+            and not verified
         ):
-            print("Keeping previously verified archive")
-        else:
-            path.write_text(
-                json.dumps(
-                    archive,
-                    ensure_ascii=False,
-                    separators=(",", ":"),
-                ),
-                encoding="utf-8",
+            replace = False
+            print(
+                "Preserving existing verified archive"
             )
-    else:
+
+    if replace:
         path.write_text(
             json.dumps(
                 archive,
@@ -296,28 +431,40 @@ def main():
         )
 
     paths = sorted(
-        p.name for p in DEST.glob("????-??-??.json")
+        p.name
+        for p in DEST.glob("????-??-??.json")
     )
 
-    verified_count = 0
+    verified_dates = set()
 
     for name in paths:
         snapshot = json.loads(
-            (DEST / name).read_text(encoding="utf-8")
+            (DEST / name).read_text(
+                encoding="utf-8"
+            )
         )
+
+        market_date = snapshot.get(
+            "verified_market_date"
+        )
+
         if (
-            snapshot.get("eligible_for_trading_day_returns") is True
-            and snapshot.get("verified_market_date")
+            snapshot.get(
+                "eligible_for_trading_day_returns"
+            ) is True
+            and market_date
         ):
-            verified_count += 1
+            verified_dates.add(market_date)
 
     index = {
         "note": (
-            "Trading sessions counted only when both "
-            "markets pass independent date checks."
+            "Only independently checked TWSE "
+            "and TPEx dates count as verified."
         ),
         "snapshots": paths,
-        "verified_trading_sessions": verified_count,
+        "verified_trading_sessions": len(
+            verified_dates
+        ),
     }
 
     INDEX.write_text(
@@ -332,11 +479,10 @@ def main():
     print("Archived:", filename)
     print("TWSE verified:", twse_ok)
     print("TPEx verified:", tpex_ok)
-    print("Full-market verified:", fully_verified)
-    print("Verified sessions:", verified_count)
+    print("Full-market verified:", verified)
     print(
-        "TPEx checks:",
-        json.dumps(tpex_checks, ensure_ascii=False),
+        "Verified sessions:",
+        len(verified_dates),
     )
 
 
