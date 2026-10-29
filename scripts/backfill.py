@@ -1,12 +1,17 @@
 
-"""V6 phase 1: backfill independently dated TWSE monthly closes.
+"""V6.1A: batched TWSE historical backfill.
 
-Run manually. Never modifies data.json or existing history snapshots.
+Historical files are separate from the live heatmap.
+Uses TWSE official monthly STOCK_DAY data.
 """
+import argparse
 import datetime as dt
+import http.client
 import json
 import pathlib
+import socket
 import time
+import urllib.error
 import urllib.request
 from zoneinfo import ZoneInfo
 
@@ -14,47 +19,52 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "data.json"
 DEST = ROOT / "historical" / "twse"
 
-MONTHS = 4
-MAX_STOCKS = 30
+HEADERS = {
+    "User-Agent": "Mozilla/5.0",
+    "Accept": "application/json",
+    "Accept-Encoding": "identity",
+    "Connection": "close",
+}
 
 
 def fetch(url):
-    last = None
+    last_error = None
 
-    for attempt in range(4):
+    for attempt in range(1, 5):
         try:
-            req = urllib.request.Request(
-                url,
-                headers={
-                    "User-Agent": "Mozilla/5.0",
-                    "Accept": "application/json",
-                    "Connection": "close",
-                },
+            request = urllib.request.Request(
+                url, headers=HEADERS
             )
 
             with urllib.request.urlopen(
-                req, timeout=35
+                request, timeout=45
             ) as response:
-                return json.loads(
-                    response.read().decode("utf-8-sig")
-                )
+                raw = response.read()
 
-        except Exception as error:
-            last = error
+            return json.loads(
+                raw.decode("utf-8-sig")
+            )
+
+        except (
+            http.client.IncompleteRead,
+            urllib.error.URLError,
+            socket.timeout,
+            TimeoutError,
+            OSError,
+            json.JSONDecodeError,
+        ) as error:
+            last_error = error
             print(
-                "Retry",
-                attempt + 1,
-                repr(error),
+                f"Retry {attempt}/4: {error}",
                 flush=True,
             )
-            time.sleep(3 * (attempt + 1))
+            time.sleep(attempt * 3)
 
-    raise RuntimeError(str(last))
+    raise RuntimeError(str(last_error))
 
 
 def months_back(today, count):
-    year = today.year
-    month = today.month
+    year, month = today.year, today.month
 
     for _ in range(count):
         yield dt.date(year, month, 1)
@@ -66,14 +76,14 @@ def months_back(today, count):
             month = 12
 
 
-def parse_row(row):
+def parse_close(row):
     try:
-        parts = str(row[0]).strip().split("/")
+        parts = str(row[0]).split("/")
 
         if len(parts) != 3:
             return None
 
-        day = dt.date(
+        date = dt.date(
             int(parts[0]) + 1911,
             int(parts[1]),
             int(parts[2]),
@@ -86,16 +96,62 @@ def parse_row(row):
         if close <= 0:
             return None
 
-        return {
-            "date": day.isoformat(),
-            "close": close,
-        }
+        return date.isoformat(), close
 
-    except (ValueError, IndexError, TypeError):
+    except (
+        ValueError,
+        IndexError,
+        TypeError,
+    ):
         return None
 
 
+def existing_series(code):
+    path = DEST / f"{code}.json"
+
+    if not path.exists():
+        return {}
+
+    try:
+        data = json.loads(
+            path.read_text(encoding="utf-8")
+        )
+
+        return {
+            item["date"]: item["close"]
+            for item in data.get("series", [])
+        }
+
+    except (
+        ValueError,
+        KeyError,
+        TypeError,
+    ):
+        return {}
+
+
 def main():
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "--offset", type=int, default=0
+    )
+    parser.add_argument(
+        "--limit", type=int, default=40
+    )
+    parser.add_argument(
+        "--months", type=int, default=7
+    )
+
+    args = parser.parse_args()
+
+    if (
+        args.offset < 0
+        or not 1 <= args.limit <= 60
+        or not 1 <= args.months <= 12
+    ):
+        parser.error("Invalid batch settings")
+
     payload = json.loads(
         SOURCE.read_text(encoding="utf-8")
     )
@@ -106,40 +162,47 @@ def main():
         if row.get("market") == "TWSE"
         and row.get("common_stock_candidate")
         and str(row.get("code", "")).isdigit()
-        and len(str(row.get("code"))) == 4
+        and len(str(row["code"])) == 4
     ]
 
-    candidates.sort(
-        key=lambda row: (
-            -(row.get("turnover") or 0),
-            str(row.get("code")),
-        )
-    )
+    # Fixed code ordering prevents turnover
+    # ranking changes from shifting batch offsets.
+    candidates.sort(key=lambda x: x["code"])
 
-    candidates = candidates[:MAX_STOCKS]
+    batch = candidates[
+        args.offset:args.offset + args.limit
+    ]
 
     today = dt.datetime.now(
         ZoneInfo("Asia/Taipei")
     ).date()
 
     DEST.mkdir(
-        parents=True,
-        exist_ok=True,
+        parents=True, exist_ok=True
     )
 
-    manifest = []
+    print(
+        "TWSE candidates:",
+        len(candidates),
+        "offset:",
+        args.offset,
+        "batch:",
+        len(batch),
+        flush=True,
+    )
 
-    for index, row in enumerate(candidates, 1):
-        code = str(row["code"])
-
-        points = {}
+    for index, row in enumerate(batch, 1):
+        code = row["code"]
+        points = existing_series(code)
         errors = []
 
-        for month in months_back(today, MONTHS):
+        for month in months_back(
+            today, args.months
+        ):
             url = (
                 "https://www.twse.com.tw/"
                 "exchangeReport/STOCK_DAY"
-                f"?response=json"
+                "?response=json"
                 f"&date={month:%Y%m%d}"
                 f"&stockNo={code}"
             )
@@ -148,29 +211,27 @@ def main():
                 data = fetch(url)
 
                 if data.get("stat") != "OK":
-                    errors.append(
-                        f"{month:%Y-%m}: "
-                        f"{data.get('stat')}"
-                    )
+                    errors.append({
+                        "month": str(month),
+                        "reason": data.get("stat"),
+                    })
                 else:
                     for item in data.get("data", []):
-                        parsed = parse_row(item)
+                        parsed = parse_close(item)
 
-                        if (
-                            parsed
-                            and parsed["date"]
-                            <= today.isoformat()
-                        ):
-                            points[
-                                parsed["date"]
-                            ] = parsed["close"]
+                        if parsed:
+                            day, close = parsed
+
+                            if day <= today.isoformat():
+                                points[day] = close
 
             except Exception as error:
-                errors.append(
-                    f"{month:%Y-%m}: {error}"
-                )
+                errors.append({
+                    "month": str(month),
+                    "reason": str(error),
+                })
 
-            time.sleep(0.35)
+            time.sleep(0.45)
 
         series = [
             {"date": day, "close": close}
@@ -196,29 +257,59 @@ def main():
             encoding="utf-8",
         )
 
-        manifest.append({
-            "code": code,
-            "name": row.get("name"),
-            "sessions": len(series),
-            "errors": len(errors),
-        })
-
         print(
-            f"[{index}/{len(candidates)}] "
-            f"{code}: {len(series)} sessions, "
+            f"{index}/{len(batch)} "
+            f"{code}: {len(series)} days, "
             f"{len(errors)} errors",
             flush=True,
         )
+
+    # Rebuild the index from all saved files,
+    # not just the current batch.
+    manifest = []
+
+    for path in sorted(DEST.glob("*.json")):
+        if path.name == "index.json":
+            continue
+
+        try:
+            data = json.loads(
+                path.read_text(encoding="utf-8")
+            )
+
+            manifest.append({
+                "code": data["code"],
+                "name": data.get("name"),
+                "sessions": len(
+                    data.get("series", [])
+                ),
+                "errors": len(
+                    data.get("errors", [])
+                ),
+            })
+
+        except (
+            ValueError,
+            KeyError,
+            TypeError,
+        ):
+            print("Invalid file:", path.name)
 
     summary = {
         "generated_at": dt.datetime.now(
             ZoneInfo("Asia/Taipei")
         ).isoformat(),
         "coverage": (
-            "TWSE top turnover pilot only; "
-            "NOT full-market or TPEx"
+            "TWSE partial batch backfill; "
+            "not full-market or TPEx"
         ),
-        "months_requested": MONTHS,
+        "total_twse_candidates": len(candidates),
+        "saved_stocks": len(manifest),
+        "last_batch": {
+            "offset": args.offset,
+            "limit": args.limit,
+            "months": args.months,
+        },
         "price_type": (
             "unadjusted close; "
             "corporate actions not adjusted"
@@ -236,9 +327,9 @@ def main():
     )
 
     print(
-        "Backfill completed. "
-        "Pilot only. "
-        "Existing snapshots unchanged."
+        "Completed. Saved stocks:",
+        len(manifest),
+        flush=True,
     )
 
 
