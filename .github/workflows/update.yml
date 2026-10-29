@@ -1,32 +1,49 @@
+
 name: Update official TW stock quotes
+
 on:
   workflow_dispatch:
   schedule:
-    # 21:00 Asia/Taipei, Monday-Friday (13:00 UTC)
     - cron: '0 13 * * 1-5'
+
 permissions:
   contents: write
+
 concurrency:
   group: official-quotes-refresh
   cancel-in-progress: false
+
 jobs:
   refresh:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
       - name: Download and validate official daily quotes
         run: python scripts/update.py
-      - name: Archive observation snapshot (not a verified trading day)
+
+      - name: Archive observation snapshot
         run: python scripts/history.py
-      - name: Commit new quotes and observation history if changed
+
+      - name: Commit quotes and history if changed
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data.json history/
+
+          git add data.json
+
+          if [ -d history ]; then
+            git add history/
+          fi
+
           if ! git diff --cached --quiet; then
-            git commit -m 'Update official quotes and observation archive'
+            git commit -m 'Update official quotes and history'
             git push
+          else
+            echo 'No changes to commit'
           fi
