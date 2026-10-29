@@ -1,0 +1,156 @@
+
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>台股市場雷達 V5｜族群輪動</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b1020;color:#e5edf7;font:14px system-ui,sans-serif}
+main{max-width:1100px;margin:auto;padding:18px}
+h1{font-size:26px}
+h2{font-size:19px}
+p{line-height:1.7}
+.muted{color:#a9b5c7}
+.panel{background:#151e31;border:1px solid #2a3851;border-radius:15px;padding:17px;margin:15px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.number{font-size:27px;font-weight:750}
+.warn{border-left:4px solid #efb74c}
+.good{color:#55d7a1}
+.bad{color:#ff7272}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:12px 9px;border-bottom:1px solid #2a3851}
+.scroll{overflow-x:auto}
+a{color:#a9c7ff}
+.tag{display:inline-block;padding:5px 9px;border-radius:7px;background:#263d60}
+</style>
+</head>
+<body>
+<main>
+<h1>台股市場雷達 V5</h1>
+<p class="muted">歷史資料監控 · 族群輪動觀察</p>
+<p><a href="./index.html">返回 V4.3 題材熱力圖</a></p>
+
+<section class="panel warn">
+目前歷史資料以擷取日期保存，並非已驗證的交易日。
+未取得足夠且日期經驗證的資料前，不計算正式的
+5／20／60 交易日報酬，也不提供未經驗證的輪動訊號。
+</section>
+
+<div id="status" class="panel">正在讀取歷史資料…</div>
+
+<div class="grid">
+<div class="panel">
+<div class="muted">歷史快照</div>
+<div class="number" id="snapshots">—</div>
+</div>
+<div class="panel">
+<div class="muted">已驗證交易日</div>
+<div class="number" id="verified">—</div>
+</div>
+<div class="panel">
+<div class="muted">最新快照日期</div>
+<div class="number" id="latest" style="font-size:19px">—</div>
+</div>
+</div>
+
+<section class="panel">
+<h2>歷史資料累積進度</h2>
+<p id="progress" class="muted">讀取中…</p>
+<div class="scroll">
+<table>
+<thead>
+<tr><th>觀察日期</th><th>筆數</th><th>交易日期</th><th>狀態</th></tr>
+</thead>
+<tbody id="historyRows"></tbody>
+</table>
+</div>
+</section>
+
+<section class="panel">
+<h2>族群輪動研究狀態</h2>
+<div class="grid" id="windows"></div>
+<p class="muted">
+只有官方交易日期經驗證、且累積足夠交易日資料後，
+才會進行多日報酬與族群輪動分析。
+</p>
+</section>
+
+<section class="panel">
+<h2>下一階段觀察項目</h2>
+<p>族群相對強弱、成交額變化、上漲家數比例、領漲股接棒與反證條件。</p>
+<p class="muted">
+本頁不揭露個人持股，也不將題材名單視為交易所正式產業分類。
+</p>
+</section>
+</main>
+<script>
+const el=id=>document.getElementById(id);
+const make=(tag,text,cls)=>{
+const e=document.createElement(tag);
+e.textContent=text;
+if(cls)e.className=cls;
+return e;
+};
+async function load(){
+try{
+const response=await fetch("./history/index.json",{cache:"no-store"});
+if(!response.ok)throw Error("找不到歷史索引");
+const index=await response.json();
+const names=Array.isArray(index.snapshots)?index.snapshots:[];
+const files=await Promise.all(names.slice(-120).map(async name=>{
+try{
+if(!/^\d{4}-\d{2}-\d{2}\.json$/.test(name))return null;
+const r=await fetch("./history/"+name,{cache:"no-store"});
+if(!r.ok)return null;
+const d=await r.json();
+return {
+name,
+date:d.observation_date||name.replace(".json",""),
+count:d.record_count,
+verified:d.verified_market_date||null,
+eligible:d.eligible_for_trading_day_returns===true
+};
+}catch{return null}
+}));
+const valid=files.filter(Boolean);
+const verified=valid.filter(x=>x.verified&&x.eligible);
+el("snapshots").textContent=names.length;
+el("verified").textContent=index.verified_trading_sessions??verified.length;
+el("latest").textContent=names.length?names[names.length-1].replace(".json",""):"—";
+el("status").textContent="歷史資料索引已載入；成功讀取 "+valid.length+" 份快照。";
+el("progress").textContent=
+"目前共有 "+names.length+" 份擷取快照；已驗證交易日 "+
+(index.verified_trading_sessions??verified.length)+
+" 天。擷取日期不可直接當作交易日。";
+const tbody=el("historyRows");
+tbody.replaceChildren();
+valid.slice().reverse().forEach(x=>{
+const tr=document.createElement("tr");
+[
+x.date,
+String(x.count??"—"),
+x.verified||"未驗證",
+x.verified&&x.eligible?"可供後續驗證分析":"僅供保存"
+].forEach(v=>tr.append(make("td",v)));
+tbody.append(tr);
+});
+const windows=el("windows");
+windows.replaceChildren();
+for(const n of [5,20,60]){
+const card=make("div","","panel");
+card.append(make("div",n+" 日族群輪動"));
+card.append(make("div",verified.length>=n?"資料數量達標，尚待建立分析":"資料不足","muted"));
+card.append(make("div",verified.length+"/"+n+" 已驗證交易日","number"));
+windows.append(card);
+}
+}catch(e){
+el("status").textContent="歷史資料讀取失敗："+e.message;
+el("progress").textContent="請確認 history/index.json 已存在。";
+}
+}
+load();
+</script>
+</body>
+</html>
