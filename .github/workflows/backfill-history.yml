@@ -1,0 +1,37 @@
+
+name: V6 Historical Backfill Pilot
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Backfill TWSE pilot historical closes
+        run: python scripts/backfill.py
+
+      - name: Commit historical pilot data
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          git add historical/twse/
+
+          if ! git diff --cached --quiet; then
+            git commit -m 'Backfill TWSE historical pilot'
+            git push
+          else
+            echo 'No historical changes'
+          fi
