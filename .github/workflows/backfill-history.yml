@@ -3,26 +3,54 @@ name: V6 Historical Backfill Pilot
 
 on:
   workflow_dispatch:
+    inputs:
+      offset:
+        description: "Starting stock index"
+        required: true
+        default: "0"
+        type: string
+      limit:
+        description: "Stocks per batch (max 60)"
+        required: true
+        default: "40"
+        type: string
+      months:
+        description: "Months to retrieve (max 12)"
+        required: true
+        default: "7"
+        type: string
 
 permissions:
   contents: write
 
+concurrency:
+  group: historical-backfill
+  cancel-in-progress: false
+
 jobs:
   backfill:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
 
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
 
-      - name: Backfill TWSE pilot historical closes
-        run: python scripts/backfill.py
+      - name: Backfill historical TWSE data
+        env:
+          OFFSET: ${{ inputs.offset }}
+          LIMIT: ${{ inputs.limit }}
+          MONTHS: ${{ inputs.months }}
+        run: |
+          python scripts/backfill.py \
+            --offset "$OFFSET" \
+            --limit "$LIMIT" \
+            --months "$MONTHS"
 
-      - name: Commit historical pilot data
+      - name: Commit historical data
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -30,8 +58,8 @@ jobs:
           git add historical/twse/
 
           if ! git diff --cached --quiet; then
-            git commit -m 'Backfill TWSE historical pilot'
+            git commit -m 'Expand TWSE historical data'
             git push
           else
-            echo 'No historical changes'
+            echo 'No changes to commit'
           fi
