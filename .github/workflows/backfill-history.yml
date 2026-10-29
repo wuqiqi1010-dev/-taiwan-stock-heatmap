@@ -1,24 +1,10 @@
 
-name: V6 Historical Backfill Pilot
+name: V6 Historical Backfill Auto
 
 on:
   workflow_dispatch:
-    inputs:
-      offset:
-        description: "Starting stock index"
-        required: true
-        default: "0"
-        type: string
-      limit:
-        description: "Stocks per batch (max 60)"
-        required: true
-        default: "40"
-        type: string
-      months:
-        description: "Months to retrieve (max 12)"
-        required: true
-        default: "7"
-        type: string
+  schedule:
+    - cron: '15 * * * *'
 
 permissions:
   contents: write
@@ -37,20 +23,72 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: '3.12'
 
-      - name: Backfill historical TWSE data
-        env:
-          OFFSET: ${{ inputs.offset }}
-          LIMIT: ${{ inputs.limit }}
-          MONTHS: ${{ inputs.months }}
+      - name: Find next incomplete batch
+        id: batch
+        shell: bash
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          from pathlib import Path
+
+          payload = json.loads(
+              Path("data.json").read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          stocks = sorted(
+              (
+                  str(row["code"])
+                  for row in payload["records"]
+                  if row.get("market") == "TWSE"
+                  and row.get("common_stock_candidate")
+                  and str(row.get("code", "")).isdigit()
+                  and len(str(row["code"])) == 4
+              )
+          )
+
+          root = Path("historical/twse")
+          batch_size = 40
+          next_offset = -1
+
+          for offset in range(
+              0, len(stocks), batch_size
+          ):
+              group = stocks[
+                  offset:offset + batch_size
+              ]
+
+              missing = any(
+                  not (root / f"{code}.json").exists()
+                  for code in group
+              )
+
+              if missing:
+                  next_offset = offset
+                  break
+
+          print(f"offset={next_offset}")
+          print(f"total={len(stocks)}")
+          PY
+
+      - name: Show progress
+        run: |
+          echo "TWSE candidates: ${{ steps.batch.outputs.total }}"
+          echo "Next offset: ${{ steps.batch.outputs.offset }}"
+
+      - name: Backfill next batch
+        if: steps.batch.outputs.offset != '-1'
         run: |
           python scripts/backfill.py \
-            --offset "$OFFSET" \
-            --limit "$LIMIT" \
-            --months "$MONTHS"
+            --offset "${{ steps.batch.outputs.offset }}" \
+            --limit 40 \
+            --months 7
 
       - name: Commit historical data
+        if: steps.batch.outputs.offset != '-1'
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
@@ -58,8 +96,14 @@ jobs:
           git add historical/twse/
 
           if ! git diff --cached --quiet; then
-            git commit -m 'Expand TWSE historical data'
+            git commit -m 'Auto backfill next TWSE batch'
             git push
           else
             echo 'No changes to commit'
           fi
+
+      - name: All batches complete
+        if: steps.batch.outputs.offset == '-1'
+        run: |
+          echo "All current TWSE candidates have historical files."
+          echo "Historical data quality still requires validation."
