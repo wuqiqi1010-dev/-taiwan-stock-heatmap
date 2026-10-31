@@ -27,6 +27,19 @@ class IntegrityTests(unittest.TestCase):
         data = sample(); del data['month_checks']
         self.assertTrue(v.inspect(data, '1101', [MONTH], TODAY))
 
+    def test_not_started_current_month(self):
+        month = dt.date(2026, 11, 1)
+        today = month
+        data = sample()
+        data['month_checks']['2026-11'] = {
+            'status': 'not_started',
+            'checked_on': today.isoformat(),
+        }
+        self.assertFalse(v.has_reached_first_weekday(month, today))
+        self.assertEqual(v.inspect(data, '1101', [MONTH, month], today), [])
+        self.assertTrue(v.has_reached_first_weekday(month, dt.date(2026, 11, 2)))
+        self.assertTrue(v.inspect(data, '1101', [MONTH, month], dt.date(2026, 11, 2)))
+
     def test_corrupt_cases(self):
         for mutation in ('duplicate', 'nan', 'negative', 'future', 'unsorted', 'truncated', 'identity', 'errors', 'missing_month', 'stale'):
             with self.subTest(mutation=mutation):
@@ -86,6 +99,40 @@ class IntegrityTests(unittest.TestCase):
                 failed = v.read(dest / '1101.json')
                 self.assertFalse(failed['validation']['complete'])
                 self.assertEqual(saved['series'], failed['series'])
+                self.assertTrue(failed['errors'])
                 self.assertEqual(v.read(dest / 'index.json')['complete_stocks'], 0)
+
+    def test_fetch_exception_remains_an_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp); source = root / 'data.json'; dest = root / 'twse'
+            source.write_text(json.dumps({'records': [{'code': '1101', 'market': 'TWSE', 'common_stock_candidate': True}]}))
+            with patch.object(b, 'SOURCE', source), patch.object(b, 'DEST', dest), patch.object(sys, 'argv', ['backfill', '--months', '1']), patch.object(b.time, 'sleep'), patch.object(b, 'fetch', side_effect=RuntimeError('network timeout')):
+                b.main()
+            saved = v.read(dest / '1101.json')
+            self.assertEqual(saved['errors'][0]['reason'], 'network timeout')
+            self.assertFalse(saved['validation']['complete'])
+            self.assertIn('fetch_errors', saved['validation']['issues'])
+
+    def test_empty_response_before_first_weekday_is_not_a_fetch_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp); source = root / 'data.json'; dest = root / 'twse'
+            source.write_text(json.dumps({'records': [{'code': '1101', 'market': 'TWSE', 'common_stock_candidate': True}]}))
+            dest.mkdir()
+            prior = sample()
+            (dest / '1101.json').write_text(json.dumps(prior))
+            response = {'stat': 'OK', 'date': '20261101', 'title': '台泥 1101 各日成交資訊', 'data': []}
+
+            class FixedDateTime(dt.datetime):
+                @classmethod
+                def now(cls, tz=None):
+                    return cls(2026, 11, 1, tzinfo=tz)
+
+            with patch.object(b, 'SOURCE', source), patch.object(b, 'DEST', dest), patch.object(sys, 'argv', ['backfill', '--months', '1']), patch.object(b.dt, 'datetime', FixedDateTime), patch.object(b.time, 'sleep'), patch.object(b, 'fetch', return_value=response):
+                b.main()
+
+            saved = v.read(dest / '1101.json')
+            self.assertEqual(saved['month_checks']['2026-11']['status'], 'not_started')
+            self.assertEqual(saved['errors'], [])
+            self.assertTrue(saved['validation']['complete'])
 
 if __name__ == '__main__': unittest.main()
