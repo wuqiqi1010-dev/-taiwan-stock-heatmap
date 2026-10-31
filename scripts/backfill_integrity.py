@@ -14,12 +14,23 @@ def digest(series):
     return hashlib.sha256(json.dumps(series, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()).hexdigest()
 
 
+def has_reached_first_weekday(month, today):
+    if month.year != today.year or month.month != today.month:
+        return month < today.replace(day=1)
+    first_weekday = month
+    while first_weekday.weekday() >= 5:
+        first_weekday += dt.timedelta(days=1)
+    return today >= first_weekday
+
+
 def inspect(data, code, months, today):
     issues = []
     if not isinstance(data, dict):
         return ['invalid_object']
     if data.get('code') != code or data.get('market') != 'TWSE':
         issues.append('identity_mismatch')
+    if data.get('errors') != []:
+        issues.append('fetch_errors')
     series = data.get('series')
     if not isinstance(series, list) or not series:
         return issues + ['empty_or_invalid_series']
@@ -40,8 +51,6 @@ def inspect(data, code, months, today):
             valid.append(item)
         except (KeyError, TypeError, ValueError):
             issues.append('invalid_duplicate_or_unsorted_row')
-    if data.get('errors') != []:
-        issues.append('fetch_errors')
     ledger = data.get('month_checks', {})
     if not isinstance(ledger, dict):
         ledger = {}
@@ -51,11 +60,17 @@ def inspect(data, code, months, today):
         check = ledger.get(key, {})
         if not isinstance(check, dict):
             check = {}
+        if (key == today.isoformat()[:7] and not rows
+            and check.get('status') == 'not_started'
+            and check.get('checked_on') == today.isoformat()
+            and not has_reached_first_weekday(month, today)):
+            continue
         if not rows or check.get('status') != 'verified':
             issues.append(f'{key}:unverified_or_missing')
         elif check.get('count') != len(rows) or check.get('sha256') != digest(rows):
             issues.append(f'{key}:content_mismatch')
-        if key == today.isoformat()[:7] and check.get('checked_on') != today.isoformat():
+        if (key == today.isoformat()[:7] and has_reached_first_weekday(month, today)
+            and check.get('checked_on') != today.isoformat()):
             issues.append(f'{key}:stale')
     return sorted(set(issues))
 

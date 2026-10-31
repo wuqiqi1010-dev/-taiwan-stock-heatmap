@@ -11,7 +11,7 @@ import json
 import math
 import os
 import tempfile
-from backfill_integrity import candidates as select_candidates, digest, inspect, read
+from backfill_integrity import candidates as select_candidates, digest, has_reached_first_weekday, inspect, read
 import pathlib
 import socket
 import time
@@ -227,7 +227,14 @@ def main():
                 if code not in title.split():
                     raise ValueError('Response stock identity mismatch')
                 raw_rows = data.get('data')
-                if not isinstance(raw_rows, list) or not raw_rows:
+                if not isinstance(raw_rows, list):
+                    raise ValueError('Invalid monthly response rows')
+                if not raw_rows:
+                    if (month == today.replace(day=1)
+                        and not has_reached_first_weekday(month, today)):
+                        checks[key] = {'status': 'not_started', 'checked_on': today.isoformat()}
+                        time.sleep(0.45)
+                        continue
                     raise ValueError('Empty monthly response; requires review')
                 monthly = {}
                 for item in raw_rows:
