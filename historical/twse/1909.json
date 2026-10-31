@@ -574,12 +574,7 @@
       "close": 9.67
     }
   ],
-  "errors": [
-    {
-      "month": "2026-08-01",
-      "reason": "Unparseable monthly row"
-    }
-  ],
+  "errors": [],
   "month_checks": {
     "2026-11": {
       "status": "not_started",
@@ -598,9 +593,14 @@
       "sha256": "6c5a9edb211f1949257c2eb71f9a08d913caf0e5644fc8b23aa22c54e27fe2c0"
     },
     "2026-08": {
-      "status": "error",
+      "status": "verified",
       "checked_on": "2026-11-01",
-      "reason": "Unparseable monthly row"
+      "count": 20,
+      "row_count": 21,
+      "no_trade_days": [
+        "2026-08-12"
+      ],
+      "sha256": "4dd2c5072d83eb01754ccda9af22635ab1a625a5b5e7090d109e0206b891512e"
     },
     "2026-07": {
       "status": "verified",
@@ -621,12 +621,9 @@
       "sha256": "e6bff94722fc204601d2a0968a653c33ac9c29fea365f8a70311350c368a2dc9"
     }
   },
-  "last_attempt": "2026-11-01T04:26:52.785237+08:00",
+  "last_attempt": "2026-11-01T05:14:17.681986+08:00",
   "validation": {
-    "issues": [
-      "2026-08:unverified_or_missing",
-      "fetch_errors"
-    ],
-    "complete": false
+    "issues": [],
+    "complete": true
   }
 }
