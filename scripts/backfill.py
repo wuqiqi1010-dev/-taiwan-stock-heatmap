@@ -8,6 +8,10 @@ import argparse
 import datetime as dt
 import http.client
 import json
+import math
+import os
+import tempfile
+from backfill_integrity import candidates as select_candidates, digest, inspect, read
 import pathlib
 import socket
 import time
@@ -93,7 +97,7 @@ def parse_close(row):
             str(row[6]).replace(",", "")
         )
 
-        if close <= 0:
+        if not math.isfinite(close) or close <= 0:
             return None
 
         return date.isoformat(), close
@@ -112,22 +116,33 @@ def existing_series(code):
     if not path.exists():
         return {}
 
+    data = read(path)
+    points = {}
+    if isinstance(data, dict) and data.get('code') == code and data.get('market') == 'TWSE':
+        for item in data.get('series', []) if isinstance(data.get('series'), list) else []:
+            try:
+                day, close = item['date'], item['close']
+                dt.date.fromisoformat(day)
+                if isinstance(close, (int, float)) and not isinstance(close, bool) and math.isfinite(close) and close > 0:
+                    points[day] = close
+            except (KeyError, TypeError, ValueError):
+                pass
+    return points
+
+
+def atomic_write(path, data):
+    # Leave the previous valid file intact if serialization/write fails.
+    temporary = None
     try:
-        data = json.loads(
-            path.read_text(encoding="utf-8")
-        )
-
-        return {
-            item["date"]: item["close"]
-            for item in data.get("series", [])
-        }
-
-    except (
-        ValueError,
-        KeyError,
-        TypeError,
-    ):
-        return {}
+        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=path.parent, delete=False) as f:
+            temporary = f.name
+            json.dump(data, f, ensure_ascii=False, indent=2, allow_nan=False)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(temporary, path)
+    finally:
+        if temporary and os.path.exists(temporary):
+            os.unlink(temporary)
 
 
 def main():
@@ -156,18 +171,7 @@ def main():
         SOURCE.read_text(encoding="utf-8")
     )
 
-    candidates = [
-        row
-        for row in payload.get("records", [])
-        if row.get("market") == "TWSE"
-        and row.get("common_stock_candidate")
-        and str(row.get("code", "")).isdigit()
-        and len(str(row["code"])) == 4
-    ]
-
-    # Fixed code ordering prevents turnover
-    # ranking changes from shifting batch offsets.
-    candidates.sort(key=lambda x: x["code"])
+    candidates = select_candidates(payload)
 
     batch = candidates[
         args.offset:args.offset + args.limit
@@ -195,6 +199,11 @@ def main():
         code = row["code"]
         points = existing_series(code)
         errors = []
+        old = read(DEST / f'{code}.json')
+        checks = old.get('month_checks', {}) if isinstance(old, dict) else {}
+        if not isinstance(checks, dict):
+            checks = {}
+        checks = dict(checks)
 
         for month in months_back(
             today, args.months
@@ -207,29 +216,37 @@ def main():
                 f"&stockNo={code}"
             )
 
+            key = month.isoformat()[:7]
             try:
                 data = fetch(url)
-
-                if data.get("stat") != "OK":
-                    errors.append({
-                        "month": str(month),
-                        "reason": data.get("stat"),
-                    })
-                else:
-                    for item in data.get("data", []):
-                        parsed = parse_close(item)
-
-                        if parsed:
-                            day, close = parsed
-
-                            if day <= today.isoformat():
-                                points[day] = close
-
+                if not isinstance(data, dict) or data.get('stat') != 'OK':
+                    raise ValueError(f'Non-OK response: {data}')
+                if data.get('date') != month.strftime('%Y%m%d'):
+                    raise ValueError('Response month mismatch')
+                title = str(data.get('title', ''))
+                if code not in title.split():
+                    raise ValueError('Response stock identity mismatch')
+                raw_rows = data.get('data')
+                if not isinstance(raw_rows, list) or not raw_rows:
+                    raise ValueError('Empty monthly response; requires review')
+                monthly = {}
+                for item in raw_rows:
+                    parsed = parse_close(item)
+                    if not parsed:
+                        raise ValueError('Unparseable monthly row')
+                    day, close = parsed
+                    if not day.startswith(key) or day > today.isoformat() or day in monthly:
+                        raise ValueError('Wrong-month, future or duplicate row')
+                    monthly[day] = close
+                verified = [{'date': day, 'close': close} for day, close in sorted(monthly.items())]
+                # Replace only after every row in this official response validates.
+                points = {day: close for day, close in points.items() if not day.startswith(key)}
+                points.update(monthly)
+                checks[key] = {'status': 'verified', 'checked_on': today.isoformat(),
+                               'count': len(verified), 'sha256': digest(verified)}
             except Exception as error:
-                errors.append({
-                    "month": str(month),
-                    "reason": str(error),
-                })
+                errors.append({'month': str(month), 'reason': str(error)})
+                checks[key] = {'status': 'error', 'checked_on': today.isoformat(), 'reason': str(error)}
 
             time.sleep(0.45)
 
@@ -246,16 +263,13 @@ def main():
             "price_type": "unadjusted close",
             "series": series,
             "errors": errors,
+            "month_checks": checks,
+            "last_attempt": dt.datetime.now(ZoneInfo('Asia/Taipei')).isoformat(),
         }
 
-        (DEST / f"{code}.json").write_text(
-            json.dumps(
-                output,
-                ensure_ascii=False,
-                separators=(",", ":"),
-            ),
-            encoding="utf-8",
-        )
+        output['validation'] = {'issues': inspect(output, code, list(months_back(today, args.months)), today)}
+        output['validation']['complete'] = not output['validation']['issues']
+        atomic_write(DEST / f'{code}.json', output)
 
         print(
             f"{index}/{len(batch)} "
@@ -279,6 +293,8 @@ def main():
 
             manifest.append({
                 "code": data["code"],
+                "complete": not inspect(data, path.stem, list(months_back(today, args.months)), today),
+                "issues": inspect(data, path.stem, list(months_back(today, args.months)), today),
                 "name": data.get("name"),
                 "sessions": len(
                     data.get("series", [])
@@ -288,12 +304,8 @@ def main():
                 ),
             })
 
-        except (
-            ValueError,
-            KeyError,
-            TypeError,
-        ):
-            print("Invalid file:", path.name)
+        except (ValueError, KeyError, TypeError, AttributeError):
+            manifest.append({'code': path.stem, 'complete': False, 'issues': ['unreadable_or_invalid_file']})
 
     summary = {
         "generated_at": dt.datetime.now(
@@ -305,6 +317,7 @@ def main():
         ),
         "total_twse_candidates": len(candidates),
         "saved_stocks": len(manifest),
+        "complete_stocks": sum(not inspect(read(DEST / f"{row['code']}.json"), str(row['code']), list(months_back(today, args.months)), today) for row in candidates),
         "last_batch": {
             "offset": args.offset,
             "limit": args.limit,
@@ -317,14 +330,7 @@ def main():
         "stocks": manifest,
     }
 
-    (DEST / "index.json").write_text(
-        json.dumps(
-            summary,
-            ensure_ascii=False,
-            indent=2,
-        ),
-        encoding="utf-8",
-    )
+    atomic_write(DEST / 'index.json', summary)
 
     print(
         "Completed. Saved stocks:",
