@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: historical-backfill
+  group: tpex-historical-backfill
   cancel-in-progress: false
 
 jobs:
