@@ -1,4 +1,3 @@
-import copy
 import datetime as dt
 import json
 import pathlib
@@ -6,6 +5,7 @@ import sys
 import tempfile
 import unittest
 from unittest.mock import patch
+
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / 'scripts'))
 import backfill as b
 import backfill_integrity as v
@@ -21,6 +21,18 @@ def sample():
             'sha256': v.digest(rows), 'checked_on': TODAY.isoformat()}}}
 
 
+class FixedOctoberDateTime(dt.datetime):
+    @classmethod
+    def now(cls, tz=None):
+        return cls(2026, 10, 30, tzinfo=tz)
+
+
+class FixedNovemberDateTime(dt.datetime):
+    @classmethod
+    def now(cls, tz=None):
+        return cls(2026, 11, 1, tzinfo=tz)
+
+
 class IntegrityTests(unittest.TestCase):
     def test_valid_and_legacy(self):
         self.assertEqual(v.inspect(sample(), '1101', [MONTH], TODAY), [])
@@ -31,10 +43,7 @@ class IntegrityTests(unittest.TestCase):
         month = dt.date(2026, 11, 1)
         today = month
         data = sample()
-        data['month_checks']['2026-11'] = {
-            'status': 'not_started',
-            'checked_on': today.isoformat(),
-        }
+        data['month_checks']['2026-11'] = {'status': 'not_started', 'checked_on': today.isoformat()}
         self.assertFalse(v.has_reached_first_weekday(month, today))
         self.assertEqual(v.inspect(data, '1101', [MONTH, month], today), [])
         self.assertTrue(v.has_reached_first_weekday(month, dt.date(2026, 11, 2)))
@@ -87,10 +96,9 @@ class IntegrityTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = pathlib.Path(tmp); source = root / 'data.json'; dest = root / 'twse'
             source.write_text(json.dumps({'records': [{'code': '1101', 'market': 'TWSE', 'common_stock_candidate': True}]}))
-            month = dt.datetime.now(b.ZoneInfo('Asia/Taipei')).date().replace(day=1)
-            response = {'stat': 'OK', 'date': month.strftime('%Y%m%d'), 'title': '台泥 1101 各日成交資訊',
-                        'data': [[f'{month.year-1911}/{month.month:02}/01', 0, 0, 0, 0, 0, '10']]}
-            with patch.object(b, 'SOURCE', source), patch.object(b, 'DEST', dest), patch.object(sys, 'argv', ['backfill', '--months', '1']), patch.object(b.time, 'sleep'), patch.object(b, 'fetch', return_value=response):
+            response = {'stat': 'OK', 'date': '20261001', 'title': '台泥 1101 各日成交資訊',
+                        'data': [['115/10/01', 0, 0, 0, 0, 0, '10']]}
+            with patch.object(b, 'SOURCE', source), patch.object(b, 'DEST', dest), patch.object(sys, 'argv', ['backfill', '--months', '1']), patch.object(b.time, 'sleep'), patch.object(b.dt, 'datetime', FixedOctoberDateTime), patch.object(b, 'fetch', return_value=response):
                 b.main()
                 saved = v.read(dest / '1101.json')
                 self.assertTrue(saved['validation']['complete'])
@@ -106,7 +114,7 @@ class IntegrityTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = pathlib.Path(tmp); source = root / 'data.json'; dest = root / 'twse'
             source.write_text(json.dumps({'records': [{'code': '1101', 'market': 'TWSE', 'common_stock_candidate': True}]}))
-            with patch.object(b, 'SOURCE', source), patch.object(b, 'DEST', dest), patch.object(sys, 'argv', ['backfill', '--months', '1']), patch.object(b.time, 'sleep'), patch.object(b, 'fetch', side_effect=RuntimeError('network timeout')):
+            with patch.object(b, 'SOURCE', source), patch.object(b, 'DEST', dest), patch.object(sys, 'argv', ['backfill', '--months', '1']), patch.object(b.time, 'sleep'), patch.object(b.dt, 'datetime', FixedOctoberDateTime), patch.object(b, 'fetch', side_effect=RuntimeError('network timeout')):
                 b.main()
             saved = v.read(dest / '1101.json')
             self.assertEqual(saved['errors'][0]['reason'], 'network timeout')
@@ -118,18 +126,9 @@ class IntegrityTests(unittest.TestCase):
             root = pathlib.Path(tmp); source = root / 'data.json'; dest = root / 'twse'
             source.write_text(json.dumps({'records': [{'code': '1101', 'market': 'TWSE', 'common_stock_candidate': True}]}))
             dest.mkdir()
-            prior = sample()
-            (dest / '1101.json').write_text(json.dumps(prior))
-            response = {'stat': 'OK', 'date': '20261101', 'title': '台泥 1101 各日成交資訊', 'data': []}
-
-            class FixedDateTime(dt.datetime):
-                @classmethod
-                def now(cls, tz=None):
-                    return cls(2026, 11, 1, tzinfo=tz)
-
-            with patch.object(b, 'SOURCE', source), patch.object(b, 'DEST', dest), patch.object(sys, 'argv', ['backfill', '--months', '1']), patch.object(b.dt, 'datetime', FixedDateTime), patch.object(b.time, 'sleep'), patch.object(b, 'fetch', return_value=response):
+            (dest / '1101.json').write_text(json.dumps(sample()))
+            with patch.object(b, 'SOURCE', source), patch.object(b, 'DEST', dest), patch.object(sys, 'argv', ['backfill', '--months', '1']), patch.object(b.dt, 'datetime', FixedNovemberDateTime), patch.object(b.time, 'sleep'), patch.object(b, 'fetch', side_effect=AssertionError('Must not fetch before first weekday')):
                 b.main()
-
             saved = v.read(dest / '1101.json')
             self.assertEqual(saved['month_checks']['2026-11']['status'], 'not_started')
             self.assertEqual(saved['errors'], [])
