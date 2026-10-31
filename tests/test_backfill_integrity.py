@@ -27,6 +27,12 @@ class FixedOctoberDateTime(dt.datetime):
         return cls(2026, 10, 30, tzinfo=tz)
 
 
+class FixedAugustDateTime(dt.datetime):
+    @classmethod
+    def now(cls, tz=None):
+        return cls(2026, 8, 31, tzinfo=tz)
+
+
 class FixedNovemberDateTime(dt.datetime):
     @classmethod
     def now(cls, tz=None):
@@ -115,6 +121,16 @@ class IntegrityTests(unittest.TestCase):
             (dest / '1909.json').write_text(json.dumps({
                 'code': '1909', 'market': 'TWSE', 'series': old_series, 'errors': [],
             }))
+            (dest / 'index.json').write_text(json.dumps({
+                'generated_at': '2026-08-30T00:00:00+08:00',
+                'complete_stocks': 0,
+                'stocks': [
+                    {'code': '1909', 'complete': False, 'issues': ['fetch_errors'],
+                     'sessions': 2, 'errors': 1},
+                    {'code': '2330', 'complete': False, 'issues': ['other'],
+                     'sessions': 3, 'errors': 0},
+                ],
+            }))
             response = {
                 'stat': 'OK',
                 'date': '20260801',
@@ -132,7 +148,9 @@ class IntegrityTests(unittest.TestCase):
                     return cls(2026, 8, 31, 12, tzinfo=tz)
 
             with patch.object(b, 'SOURCE', source), patch.object(b, 'DEST', dest), \
-                 patch.object(sys, 'argv', ['backfill', '--months', '1']), \
+                 patch.object(sys, 'argv', [
+                     'backfill', '--code', '1909', '--month', '2026-08', '--months', '1'
+                 ]), \
                  patch.object(b.dt, 'datetime', FixedDateTime), \
                  patch.object(b.time, 'sleep'), patch.object(b, 'fetch', return_value=response):
                 b.main()
@@ -149,6 +167,54 @@ class IntegrityTests(unittest.TestCase):
             ])
             self.assertEqual(saved['errors'], [])
             self.assertTrue(saved['validation']['complete'])
+            index = v.read(dest / 'index.json')
+            self.assertEqual(index['complete_stocks'], 1)
+            self.assertEqual(index['stocks'][0]['complete'], True)
+            self.assertEqual(index['stocks'][1], {
+                'code': '2330', 'complete': False, 'issues': ['other'],
+                'sessions': 3, 'errors': 0,
+            })
+
+    def test_targeted_backfill_preserves_other_month_errors(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp); source = root / 'data.json'; dest = root / 'twse'
+            source.write_text(json.dumps({'records': [
+                {'code': '1909', 'market': 'TWSE', 'common_stock_candidate': True},
+                {'code': '2330', 'market': 'TWSE', 'common_stock_candidate': True},
+            ]}))
+            dest.mkdir()
+            old_error = {'month': '2026-07-01', 'reason': 'existing July error'}
+            (dest / '1909.json').write_text(json.dumps({
+                'code': '1909', 'market': 'TWSE',
+                'series': [{'date': '2026-07-31', 'close': 9.85}],
+                'errors': [old_error],
+            }))
+            response = {
+                'stat': 'OK',
+                'date': '20260801',
+                'title': '115年08月 1909 榮成 各日成交資訊',
+                'data': [
+                    ['115/08/13', '10,559,012', '110,645,098',
+                     '10.45', '10.85', '10.10', '10.15', 'X0.00', '3,526', ''],
+                ],
+            }
+
+            with patch.object(b, 'SOURCE', source), patch.object(b, 'DEST', dest), \
+                 patch.object(sys, 'argv', [
+                     'backfill', '--code', '1909', '--month', '2026-08', '--months', '1'
+                 ]), \
+                 patch.object(b.dt, 'datetime', FixedAugustDateTime), \
+                 patch.object(b.time, 'sleep'), patch.object(b, 'fetch', return_value=response) as fetch:
+                b.main()
+
+            fetch.assert_called_once()
+            saved = v.read(dest / '1909.json')
+            self.assertEqual(saved['errors'], [old_error])
+            self.assertEqual(saved['series'], [
+                {'date': '2026-07-31', 'close': 9.85},
+                {'date': '2026-08-13', 'close': 10.15},
+            ])
+            self.assertFalse((dest / '2330.json').exists())
 
     def test_malformed_zero_trade_row_fails_without_overwriting_existing_data(self):
         with tempfile.TemporaryDirectory() as tmp:

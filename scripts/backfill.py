@@ -149,28 +149,65 @@ def main():
     parser.add_argument("--offset", type=int, default=0)
     parser.add_argument("--limit", type=int, default=40)
     parser.add_argument("--months", type=int, default=7)
+    parser.add_argument("--code", help="Backfill one TWSE stock")
+    parser.add_argument("--month", help="Backfill one month in YYYY-MM format")
     args = parser.parse_args()
     if args.offset < 0 or not 1 <= args.limit <= 60 or not 1 <= args.months <= 12:
         parser.error("Invalid batch settings")
+    if (args.code is None) != (args.month is None):
+        parser.error("--code and --month must be provided together")
+
+    target_month = None
+    if args.month is not None:
+        try:
+            target_month = dt.date.fromisoformat(f"{args.month}-01")
+        except ValueError:
+            parser.error("--month must be a valid YYYY-MM month")
+        if target_month.strftime("%Y-%m") != args.month:
+            parser.error("--month must be a valid YYYY-MM month")
 
     payload = json.loads(SOURCE.read_text(encoding="utf-8"))
     candidates = select_candidates(payload)
-    batch = candidates[args.offset:args.offset + args.limit]
+    if args.code is None:
+        batch = candidates[args.offset:args.offset + args.limit]
+    else:
+        batch = [row for row in candidates if str(row["code"]) == args.code]
+        if not batch:
+            parser.error(f"--code {args.code} is not a current TWSE candidate")
     today = dt.datetime.now(ZoneInfo("Asia/Taipei")).date()
+    if target_month and target_month > today.replace(day=1):
+        parser.error("--month cannot be in the future")
+    selected_months = (
+        [target_month] if target_month else list(months_back(today, args.months))
+    )
     DEST.mkdir(parents=True, exist_ok=True)
-    print("TWSE candidates:", len(candidates), "offset:", args.offset, "batch:", len(batch), flush=True)
+    print(
+        "TWSE candidates:", len(candidates), "offset:", args.offset,
+        "batch:", len(batch),
+        "target:", f"{args.code}/{args.month}" if target_month else "batch",
+        flush=True,
+    )
 
     for index, row in enumerate(batch, 1):
         code = row["code"]
         points = existing_series(code)
-        errors = []
         old = read(DEST / f'{code}.json')
+        previous_errors = old.get("errors", []) if isinstance(old, dict) else []
+        if target_month:
+            target_key = target_month.isoformat()[:7]
+            errors = [
+                error for error in previous_errors if
+                not isinstance(error, dict)
+                or str(error.get("month", ""))[:7] != target_key
+            ] if isinstance(previous_errors, list) else []
+        else:
+            errors = []
         checks = old.get('month_checks', {}) if isinstance(old, dict) else {}
         if not isinstance(checks, dict):
             checks = {}
         checks = dict(checks)
 
-        for month in months_back(today, args.months):
+        for month in selected_months:
             key = month.isoformat()[:7]
             # No trading weekday has occurred in this month yet.
             # Do not fetch an expected empty TWSE monthly response.
@@ -246,45 +283,82 @@ def main():
             "month_checks": checks,
             "last_attempt": dt.datetime.now(ZoneInfo('Asia/Taipei')).isoformat(),
         }
+        validation_months = list(months_back(today, args.months))
+        if target_month and target_month not in validation_months:
+            validation_months.append(target_month)
         output['validation'] = {
-            'issues': inspect(output, code, list(months_back(today, args.months)), today)
+            'issues': inspect(output, code, validation_months, today)
         }
         output['validation']['complete'] = not output['validation']['issues']
         atomic_write(DEST / f'{code}.json', output)
+        if target_month:
+            index_path = DEST / "index.json"
+            summary = read(index_path)
+            if isinstance(summary, dict) and isinstance(summary.get("stocks"), list):
+                entry = next(
+                    (item for item in summary["stocks"]
+                     if isinstance(item, dict) and str(item.get("code")) == str(code)),
+                    None,
+                )
+                if entry is not None:
+                    was_complete = entry.get("complete") is True
+                    is_complete = output["validation"]["complete"]
+                    entry.update({
+                        "complete": is_complete,
+                        "issues": output["validation"]["issues"],
+                        "sessions": len(series),
+                        "errors": len(errors),
+                    })
+                    complete_stocks = summary.get("complete_stocks")
+                    if isinstance(complete_stocks, int) and not isinstance(complete_stocks, bool):
+                        summary["complete_stocks"] = (
+                            complete_stocks + int(is_complete) - int(was_complete)
+                        )
+                    else:
+                        summary["complete_stocks"] = sum(
+                            item.get("complete") is True
+                            for item in summary["stocks"]
+                            if isinstance(item, dict)
+                        )
+                    summary["generated_at"] = dt.datetime.now(
+                        ZoneInfo("Asia/Taipei")
+                    ).isoformat()
+                    atomic_write(index_path, summary)
         print(f"{index}/{len(batch)} {code}: {len(series)} days, {len(errors)} errors", flush=True)
 
-    manifest = []
-    for path in sorted(DEST.glob("*.json")):
-        if path.name == "index.json":
-            continue
-        try:
-            data = json.loads(path.read_text(encoding="utf-8"))
-            issues = inspect(data, path.stem, list(months_back(today, args.months)), today)
-            manifest.append({
-                "code": data["code"], "complete": not issues,
-                "issues": issues, "name": data.get("name"),
-                "sessions": len(data.get("series", [])),
-                "errors": len(data.get("errors", [])),
-            })
-        except (ValueError, KeyError, TypeError, AttributeError):
-            manifest.append({'code': path.stem, 'complete': False, 'issues': ['unreadable_or_invalid_file']})
+    if not target_month:
+        manifest = []
+        for path in sorted(DEST.glob("*.json")):
+            if path.name == "index.json":
+                continue
+            try:
+                data = json.loads(path.read_text(encoding="utf-8"))
+                issues = inspect(data, path.stem, list(months_back(today, args.months)), today)
+                manifest.append({
+                    "code": data["code"], "complete": not issues,
+                    "issues": issues, "name": data.get("name"),
+                    "sessions": len(data.get("series", [])),
+                    "errors": len(data.get("errors", [])),
+                })
+            except (ValueError, KeyError, TypeError, AttributeError):
+                manifest.append({'code': path.stem, 'complete': False, 'issues': ['unreadable_or_invalid_file']})
 
-    summary = {
-        "generated_at": dt.datetime.now(ZoneInfo("Asia/Taipei")).isoformat(),
-        "coverage": "TWSE partial batch backfill; not full-market or TPEx",
-        "total_twse_candidates": len(candidates),
-        "saved_stocks": len(manifest),
-        "complete_stocks": sum(
-            not inspect(read(DEST / f"{row['code']}.json"), str(row['code']),
-                        list(months_back(today, args.months)), today)
-            for row in candidates
-        ),
-        "last_batch": {"offset": args.offset, "limit": args.limit, "months": args.months},
-        "price_type": "unadjusted close; corporate actions not adjusted",
-        "stocks": manifest,
-    }
-    atomic_write(DEST / 'index.json', summary)
-    print("Completed. Saved stocks:", len(manifest), flush=True)
+        summary = {
+            "generated_at": dt.datetime.now(ZoneInfo("Asia/Taipei")).isoformat(),
+            "coverage": "TWSE partial batch backfill; not full-market or TPEx",
+            "total_twse_candidates": len(candidates),
+            "saved_stocks": len(manifest),
+            "complete_stocks": sum(
+                not inspect(read(DEST / f"{row['code']}.json"), str(row['code']),
+                            list(months_back(today, args.months)), today)
+                for row in candidates
+            ),
+            "last_batch": {"offset": args.offset, "limit": args.limit, "months": args.months},
+            "price_type": "unadjusted close; corporate actions not adjusted",
+            "stocks": manifest,
+        }
+        atomic_write(DEST / 'index.json', summary)
+        print("Completed. Saved stocks:", len(manifest), flush=True)
 
 
 if __name__ == "__main__":
