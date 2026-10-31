@@ -145,6 +145,33 @@ def inspect(data, code, months, today):
         ):
             issues.append(f"{key}:stale")
 
+        if "row_count" in check or "no_trade_days" in check:
+            no_trade_days = check.get('no_trade_days')
+            row_count = check.get('row_count')
+            valid_no_trade_days = []
+            if isinstance(no_trade_days, list):
+                for day in no_trade_days:
+                    try:
+                        date = dt.date.fromisoformat(day)
+                        if (
+                            date.isoformat() != day
+                            or not day.startswith(key)
+                            or date > today
+                            or day in seen
+                            or day in valid_no_trade_days
+                        ):
+                            raise ValueError()
+                        valid_no_trade_days.append(day)
+                    except (TypeError, ValueError):
+                        issues.append(f'{key}:invalid_no_trade_day')
+            else:
+                issues.append(f'{key}:invalid_no_trade_day')
+            if (
+                isinstance(row_count, bool)
+                or not isinstance(row_count, int)
+                or row_count != len(rows) + len(valid_no_trade_days)
+            ):
+                issues.append(f'{key}:row_count_mismatch')
     return sorted(set(issues))
 
 

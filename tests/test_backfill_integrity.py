@@ -92,13 +92,116 @@ class IntegrityTests(unittest.TestCase):
     def test_parser_rejects_nonfinite(self):
         self.assertIsNone(b.parse_close(['115/10/01', 0, 0, 0, 0, 0, 'NaN']))
 
+    def test_parser_records_verified_zero_trade_row_and_special_change_symbol(self):
+        no_trade = ['115/08/12', '0', '0', '--', '--', '--', '--', ' 0.00', '0', '']
+        special_change = ['115/08/13', '10,559,012', '110,645,098',
+                          '10.45', '10.85', '10.10', '10.15', 'X0.00', '3,526', '']
+        self.assertEqual(b.parse_monthly_row(no_trade), ('2026-08-12', None))
+        self.assertIsNone(b.parse_close(no_trade))
+        self.assertEqual(b.parse_close(special_change), ('2026-08-13', 10.15))
+        self.assertIsNone(b.parse_monthly_row(
+            ['115/08/12', '1', '0', '--', '--', '--', '--', ' 0.00', '0', '']
+        ))
+
+    def test_zero_trade_row_is_recorded_and_other_month_data_is_preserved(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp); source = root / 'data.json'; dest = root / 'twse'
+            source.write_text(json.dumps({'records': [{'code': '1909', 'market': 'TWSE', 'common_stock_candidate': True}]}))
+            dest.mkdir()
+            old_series = [
+                {'date': '2026-07-31', 'close': 9.85},
+                {'date': '2026-08-11', 'close': 10.10},
+            ]
+            (dest / '1909.json').write_text(json.dumps({
+                'code': '1909', 'market': 'TWSE', 'series': old_series, 'errors': [],
+            }))
+            response = {
+                'stat': 'OK',
+                'date': '20260801',
+                'title': '115年08月 1909 榮成 各日成交資訊',
+                'data': [
+                    ['115/08/12', '0', '0', '--', '--', '--', '--', ' 0.00', '0', ''],
+                    ['115/08/13', '10,559,012', '110,645,098',
+                     '10.45', '10.85', '10.10', '10.15', 'X0.00', '3,526', ''],
+                ],
+            }
+
+            class FixedDateTime(dt.datetime):
+                @classmethod
+                def now(cls, tz=None):
+                    return cls(2026, 8, 31, 12, tzinfo=tz)
+
+            with patch.object(b, 'SOURCE', source), patch.object(b, 'DEST', dest), \
+                 patch.object(sys, 'argv', ['backfill', '--months', '1']), \
+                 patch.object(b.dt, 'datetime', FixedDateTime), \
+                 patch.object(b.time, 'sleep'), patch.object(b, 'fetch', return_value=response):
+                b.main()
+
+            saved = v.read(dest / '1909.json')
+            check = saved['month_checks']['2026-08']
+            self.assertEqual(check['status'], 'verified')
+            self.assertEqual(check['count'], 1)
+            self.assertEqual(check['row_count'], 2)
+            self.assertEqual(check['no_trade_days'], ['2026-08-12'])
+            self.assertEqual(saved['series'], [
+                {'date': '2026-07-31', 'close': 9.85},
+                {'date': '2026-08-13', 'close': 10.15},
+            ])
+            self.assertEqual(saved['errors'], [])
+            self.assertTrue(saved['validation']['complete'])
+
+    def test_malformed_zero_trade_row_fails_without_overwriting_existing_data(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = pathlib.Path(tmp); source = root / 'data.json'; dest = root / 'twse'
+            source.write_text(json.dumps({'records': [{'code': '1909', 'market': 'TWSE', 'common_stock_candidate': True}]}))
+            dest.mkdir()
+            old_series = [
+                {'date': '2026-07-31', 'close': 9.85},
+                {'date': '2026-08-11', 'close': 10.10},
+            ]
+            (dest / '1909.json').write_text(json.dumps({
+                'code': '1909', 'market': 'TWSE', 'series': old_series, 'errors': [],
+            }))
+            response = {
+                'stat': 'OK',
+                'date': '20260801',
+                'title': '115年08月 1909 榮成 各日成交資訊',
+                'data': [
+                    ['115/08/12', '1', '0', '--', '--', '--', '--', ' 0.00', '0', ''],
+                ],
+            }
+
+            class FixedDateTime(dt.datetime):
+                @classmethod
+                def now(cls, tz=None):
+                    return cls(2026, 8, 31, 12, tzinfo=tz)
+
+            with patch.object(b, 'SOURCE', source), patch.object(b, 'DEST', dest), \
+                 patch.object(sys, 'argv', ['backfill', '--months', '1']), \
+                 patch.object(b.dt, 'datetime', FixedDateTime), \
+                 patch.object(b.time, 'sleep'), patch.object(b, 'fetch', return_value=response):
+                b.main()
+
+            saved = v.read(dest / '1909.json')
+            self.assertEqual(saved['series'], old_series)
+            self.assertEqual(saved['errors'][0]['reason'], 'Unparseable monthly row')
+            self.assertEqual(saved['month_checks']['2026-08']['status'], 'error')
+            self.assertFalse(saved['validation']['complete'])
+
     def test_mocked_backfill_and_failed_retry(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = pathlib.Path(tmp); source = root / 'data.json'; dest = root / 'twse'
             source.write_text(json.dumps({'records': [{'code': '1101', 'market': 'TWSE', 'common_stock_candidate': True}]}))
-            response = {'stat': 'OK', 'date': '20261001', 'title': '台泥 1101 各日成交資訊',
-                        'data': [['115/10/01', 0, 0, 0, 0, 0, '10']]}
-            with patch.object(b, 'SOURCE', source), patch.object(b, 'DEST', dest), patch.object(sys, 'argv', ['backfill', '--months', '1']), patch.object(b.time, 'sleep'), patch.object(b.dt, 'datetime', FixedOctoberDateTime), patch.object(b, 'fetch', return_value=response):
+            response = {
+                'stat': 'OK',
+                'date': '20261001',
+                'title': '台泥 1101 各日成交資訊',
+                'data': [['115/10/01', '100', '1000', '10', '10', '10', '10', '0.00', '1', '']],
+            }
+            with patch.object(b, 'SOURCE', source), patch.object(b, 'DEST', dest), \
+                 patch.object(sys, 'argv', ['backfill', '--months', '1']), \
+                 patch.object(b.dt, 'datetime', FixedOctoberDateTime), \
+                 patch.object(b.time, 'sleep'), patch.object(b, 'fetch', return_value=response):
                 b.main()
                 saved = v.read(dest / '1101.json')
                 self.assertTrue(saved['validation']['complete'])

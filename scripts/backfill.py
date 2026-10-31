@@ -62,18 +62,54 @@ def months_back(today, count):
             month = 12
 
 
-def parse_close(row):
+def parse_monthly_row(row):
+    if not isinstance(row, (list, tuple)) or len(row) < 10:
+        return None
+
     try:
         parts = str(row[0]).split("/")
         if len(parts) != 3:
             return None
-        date = dt.date(int(parts[0]) + 1911, int(parts[1]), int(parts[2]))
-        close = float(str(row[6]).replace(",", ""))
+
+        date = dt.date(
+            int(parts[0]) + 1911,
+            int(parts[1]),
+            int(parts[2]),
+        )
+
+        day = date.isoformat()
+        close_text = str(row[6]).strip().replace(",", "")
+        if close_text == "--":
+            volume = str(row[1]).strip().replace(",", "")
+            amount = str(row[2]).strip().replace(",", "")
+            trades = str(row[8]).strip().replace(",", "")
+            prices = [str(value).strip() for value in row[3:7]]
+            if (
+                volume == amount == trades == "0"
+                and prices == ["--"] * 4
+            ):
+                return day, None
+            return None
+
+        close = float(close_text)
         if not math.isfinite(close) or close <= 0:
             return None
-        return date.isoformat(), close
-    except (ValueError, IndexError, TypeError):
+
+        return day, close
+
+    except (
+        ValueError,
+        IndexError,
+        TypeError,
+    ):
         return None
+
+
+def parse_close(row):
+    parsed = parse_monthly_row(row)
+    if parsed is None or parsed[1] is None:
+        return None
+    return parsed
 
 
 def existing_series(code):
@@ -165,20 +201,33 @@ def main():
                 if not raw_rows:
                     raise ValueError('Empty monthly response; requires review')
                 monthly = {}
+                no_trade_days = []
                 for item in raw_rows:
-                    parsed = parse_close(item)
+                    parsed = parse_monthly_row(item)
                     if not parsed:
                         raise ValueError('Unparseable monthly row')
                     day, close = parsed
-                    if not day.startswith(key) or day > today.isoformat() or day in monthly:
+                    if (
+                        not day.startswith(key)
+                        or day > today.isoformat()
+                        or day in monthly
+                        or day in no_trade_days
+                    ):
                         raise ValueError('Wrong-month, future or duplicate row')
-                    monthly[day] = close
+                    if close is None:
+                        no_trade_days.append(day)
+                    else:
+                        monthly[day] = close
                 verified = [{'date': day, 'close': close} for day, close in sorted(monthly.items())]
                 points = {day: close for day, close in points.items() if not day.startswith(key)}
                 points.update(monthly)
                 checks[key] = {
-                    'status': 'verified', 'checked_on': today.isoformat(),
-                    'count': len(verified), 'sha256': digest(verified)
+                    'status': 'verified',
+                    'checked_on': today.isoformat(),
+                    'count': len(verified),
+                    'row_count': len(raw_rows),
+                    'no_trade_days': sorted(no_trade_days),
+                    'sha256': digest(verified),
                 }
             except Exception as error:
                 errors.append({'month': str(month), 'reason': str(error)})
