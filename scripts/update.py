@@ -224,8 +224,8 @@ def main():
         "market_date": "尚未由官方來源驗證",
         "date_verified": False,
         "note": (
-            "官方行情檢視版。交易日期尚未驗證；"
-            "產業分類及歷史報酬尚未接入。"
+            "官方上市櫃行情檢視版；題材為自訂觀察名單。"
+            "歷史複盤僅使用逐月驗證成功的未還原收盤價。"
         ),
         "sources": status,
         "records": records,

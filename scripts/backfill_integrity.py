@@ -46,13 +46,13 @@ def month_not_started(month, today):
     )
 
 
-def inspect(data, code, months, today):
+def inspect(data, code, months, today, market="TWSE"):
     issues = []
 
     if not isinstance(data, dict):
         return ["invalid_object"]
 
-    if data.get("code") != code or data.get("market") != "TWSE":
+    if data.get("code") != code or data.get("market") != market:
         issues.append("identity_mismatch")
 
     errors = data.get("errors")
@@ -96,6 +96,7 @@ def inspect(data, code, months, today):
             if (
                 date.isoformat() != day
                 or date > today
+                or date.weekday() >= 5
                 or day in seen
                 or day <= previous
                 or isinstance(close, bool)
@@ -198,6 +199,7 @@ def inspect(data, code, months, today):
                             date.isoformat() != day
                             or not day.startswith(key)
                             or date > today
+                            or date.weekday() >= 5
                             or day in seen
                             or day in valid_no_trade_days
                         ):
@@ -215,6 +217,7 @@ def inspect(data, code, months, today):
                             date.isoformat() != day
                             or not day.startswith(key)
                             or date > today
+                            or date.weekday() >= 5
                             or day in seen
                             or day in valid_no_trade_days
                             or day in valid_no_price_days
@@ -242,7 +245,7 @@ def read(path):
         return None
 
 
-def candidates(payload):
+def candidates(payload, market="TWSE"):
     if not isinstance(payload, dict):
         return []
 
@@ -259,7 +262,7 @@ def candidates(payload):
         code = str(row.get("code", ""))
 
         if (
-            row.get("market") == "TWSE"
+            row.get("market") == market
             and row.get("common_stock_candidate")
             and code.isdigit()
             and len(code) == 4
@@ -269,7 +272,7 @@ def candidates(payload):
     return sorted(selected.values(), key=lambda row: str(row["code"]))
 
 
-def plan(stocks, root, months, today, batch_size=40):
+def plan(stocks, root, months, today, batch_size=40, market="TWSE"):
     pending = []
 
     for offset in range(0, len(stocks), batch_size):
@@ -280,7 +283,7 @@ def plan(stocks, root, months, today, batch_size=40):
             code = str(row["code"])
             data = read(root / f"{code}.json")
 
-            if inspect(data, code, months, today):
+            if inspect(data, code, months, today, market=market):
                 incomplete = True
 
             attempts.append(
@@ -298,12 +301,13 @@ def plan(stocks, root, months, today, batch_size=40):
 
 if __name__ == "__main__":
     import argparse
-    from backfill import ROOT, DEST, months_back
+    from backfill import ROOT, months_back
     from zoneinfo import ZoneInfo
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--plan", action="store_true")
     parser.add_argument("--months", type=int, default=7)
+    parser.add_argument("--market", choices=("TWSE", "TPEx"), default="TWSE")
     parser.add_argument("--check-batch", action="store_true")
     parser.add_argument("--offset", type=int, default=0)
     parser.add_argument("--limit", type=int, default=40)
@@ -317,11 +321,12 @@ if __name__ == "__main__":
         parser.error("Invalid batch settings")
 
     today = dt.datetime.now(ZoneInfo("Asia/Taipei")).date()
-    stocks = candidates(read(ROOT / "data.json"))
+    stocks = candidates(read(ROOT / "data.json"), market=args.market)
+    destination = ROOT / "historical" / args.market.lower()
 
     if not stocks:
         raise SystemExit(
-            "No TWSE candidates: refusing to report completion"
+            f"No {args.market} candidates: refusing to report completion"
         )
 
     months = list(months_back(today, args.months))
@@ -332,16 +337,19 @@ if __name__ == "__main__":
             raise SystemExit("Empty batch")
 
     if args.plan:
-        print(f"offset={plan(stocks, DEST, months, today)}")
+        print(
+            f"offset={plan(stocks, destination, months, today, market=args.market)}"
+        )
         print(f"total={len(stocks)}")
 
     else:
         report = {
             str(row["code"]): inspect(
-                read(DEST / (str(row["code"]) + ".json")),
+                read(destination / (str(row["code"]) + ".json")),
                 str(row["code"]),
                 months,
                 today,
+                market=args.market,
             )
             for row in stocks
         }
@@ -349,6 +357,7 @@ if __name__ == "__main__":
         print(
             json.dumps(
                 {
+                    "market": args.market,
                     "total": len(stocks),
                     "complete": sum(not x for x in report.values()),
                     "incomplete": {
