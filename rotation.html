@@ -24,6 +24,9 @@ th,td{text-align:left;padding:12px 9px;border-bottom:1px solid #2a3851}
 .scroll{overflow-x:auto}
 a{color:#a9c7ff}
 .tag{display:inline-block;padding:5px 9px;border-radius:7px;background:#263d60}
+select,input{background:#0c1426;color:#e5edf7;border:1px solid #46536c;border-radius:8px;padding:9px}
+.toolbar{display:flex;flex-wrap:wrap;align-items:end;gap:10px;margin:12px 0}
+.toolbar label{display:grid;gap:5px}
 </style>
 </head>
 <body>
@@ -69,6 +72,43 @@ a{color:#a9c7ff}
 </section>
 
 <section class="panel">
+<h2>歷史複盤｜上市與上櫃</h2>
+<p class="muted">
+只採用逐月驗證成功的官方收盤資料；未驗證月份、停牌日或沒有當日行情的股票不納入。
+報酬期數依個股有報價的交易日計算，使用未還原收盤價，未調整除權息。
+</p>
+<div class="toolbar">
+<label>題材
+<select id="replayTheme"></select>
+</label>
+<label>市場
+<select id="replayMarket">
+<option value="all">上市＋上櫃</option>
+<option value="TWSE">上市（TWSE）</option>
+<option value="TPEx">上櫃（TPEx）</option>
+</select>
+</label>
+<label>複盤日期
+<input id="replayDate" type="date">
+</label>
+<button id="replayButton">載入複盤</button>
+</div>
+<p id="replayStatus" class="muted">正在讀取上市櫃回補索引…</p>
+<div id="replaySummary" class="grid"></div>
+<div class="scroll">
+<table>
+<thead>
+<tr>
+<th>代號</th><th>名稱</th><th>市場</th><th>收盤</th>
+<th>1 交易日</th><th>5 交易日</th><th>20 交易日</th><th>60 交易日</th>
+</tr>
+</thead>
+<tbody id="replayRows"></tbody>
+</table>
+</div>
+</section>
+
+<section class="panel">
 <h2>族群輪動研究狀態</h2>
 <div class="grid" id="windows"></div>
 <p class="muted">
@@ -85,14 +125,146 @@ a{color:#a9c7ff}
 </p>
 </section>
 </main>
+<script src="./themes.js"></script>
 <script>
 const el=id=>document.getElementById(id);
+const THEMES=window.THEMES;
+const historicalCache=new Map();
+const universe=new Map();
 const make=(tag,text,cls)=>{
 const e=document.createElement(tag);
 e.textContent=text;
 if(cls)e.className=cls;
 return e;
 };
+
+function formatReturn(value){
+return value===null?"—":(value>0?"+":"")+value.toFixed(2)+"%";
+}
+
+function returnAt(series,index,days){
+if(index<days)return null;
+const start=series[index-days].close;
+const current=series[index].close;
+return start>0?((current/start)-1)*100:null;
+}
+
+function loadStockHistory(market,code){
+const key=market+":"+code;
+if(!historicalCache.has(key)){
+historicalCache.set(key,(async()=>{
+const response=await fetch(
+"./historical/"+market.toLowerCase()+"/"+encodeURIComponent(code)+".json",
+{cache:"no-store"}
+);
+if(response.status===404)return null;
+if(!response.ok)throw Error("讀取 "+market+" "+code+" 失敗："+response.status);
+const data=await response.json();
+if(data.code!==code||data.market!==market)throw Error(market+" "+code+" 歷史檔身分不符");
+return data;
+})());
+}
+return historicalCache.get(key);
+}
+
+function renderReplay(rows,date,theme,market){
+const periods=[1,5,20,60];
+const summary=el("replaySummary");
+summary.replaceChildren();
+periods.forEach(days=>{
+const valid=rows.filter(row=>row["return"+days]!==null);
+const average=valid.length?
+valid.reduce((sum,row)=>sum+row["return"+days],0)/valid.length:null;
+const rising=valid.filter(row=>row["return"+days]>0).length;
+const card=make("div","","panel");
+card.append(make("div",days+" 交易日平均報酬"));
+card.append(make("div",formatReturn(average),"number"));
+card.append(make("div",valid.length?
+"有效 "+valid.length+" 檔；上漲 "+rising+" 檔":
+"樣本不足","muted"));
+summary.append(card);
+});
+
+const tbody=el("replayRows");
+tbody.replaceChildren();
+rows.sort((a,b)=>(b.return20??-Infinity)-(a.return20??-Infinity));
+rows.forEach(row=>{
+const tr=document.createElement("tr");
+[
+row.code,row.name,row.market,row.close.toLocaleString("zh-TW"),
+formatReturn(row.return1),formatReturn(row.return5),
+formatReturn(row.return20),formatReturn(row.return60)
+].forEach((value,index)=>{
+const td=make("td",value);
+if(index>=4){
+const n=row["return"+[1,5,20,60][index-4]];
+td.className=n>0?"bad":n<0?"good":"";
+}
+tr.append(td);
+});
+tbody.append(tr);
+});
+el("replayStatus").textContent=
+"複盤日期 "+date+"｜"+theme+"｜"+
+(market==="all"?"上市＋上櫃":market)+
+"；符合當日已驗證行情 "+rows.length+" 檔。";
+}
+
+async function replay(){
+const theme=el("replayTheme").value;
+const market=el("replayMarket").value;
+const date=el("replayDate").value;
+if(!date){
+el("replayStatus").textContent="請選擇複盤日期。";
+return;
+}
+el("replayStatus").textContent="正在載入 "+theme+" 歷史行情…";
+el("replaySummary").replaceChildren();
+el("replayRows").replaceChildren();
+try{
+const entries=[...universe.values()].filter(stock=>
+THEMES[theme].includes(stock.code)&&
+(market==="all"||stock.market===market)
+);
+let missingFiles=0;
+const rows=[];
+for(let offset=0;offset<entries.length;offset+=16){
+const batch=await Promise.all(entries.slice(offset,offset+16).map(async stock=>{
+const data=await loadStockHistory(stock.market,stock.code);
+if(!data){missingFiles++;return null;}
+const checks=data.month_checks&&typeof data.month_checks==="object"?
+data.month_checks:{};
+const series=(Array.isArray(data.series)?data.series:[]).filter(point=>{
+if(!point||typeof point.date!=="string"||
+!Number.isFinite(point.close)||point.close<=0||
+point.date>date)return false;
+return checks[point.date.slice(0,7)]?.status==="verified";
+});
+const index=series.findIndex(point=>point.date===date);
+if(index<0)return null;
+return {
+code:stock.code,name:stock.name,market:stock.market,
+close:series[index].close,
+return1:returnAt(series,index,1),
+return5:returnAt(series,index,5),
+return20:returnAt(series,index,20),
+return60:returnAt(series,index,60)
+};
+}));
+rows.push(...batch.filter(Boolean));
+}
+renderReplay(rows,date,theme,market);
+if(missingFiles){
+el("replayStatus").textContent+=
+"；缺少歷史檔 "+missingFiles+" 檔，回補仍在進行或名單尚未同步。";
+}
+}catch(error){
+el("replayStatus").textContent="複盤載入失敗："+error.message;
+}
+}
+
+el("replayButton").onclick=replay;
+
 async function load(){
 try{
 const response=await fetch("./history/index.json",{cache:"no-store"});
@@ -145,6 +317,51 @@ card.append(make("div",verified.length>=n?"資料數量達標，尚待建立分�
 card.append(make("div",verified.length+"/"+n+" 已驗證交易日","number"));
 windows.append(card);
 }
+
+const themeSelect=el("replayTheme");
+Object.keys(THEMES).forEach(theme=>themeSelect.append(make("option",theme)));
+const quoteResponse=await fetch("./data.json",{cache:"no-store"});
+if(!quoteResponse.ok)throw Error("找不到上市櫃股票清單 data.json");
+const quoteData=await quoteResponse.json();
+for(const stock of Array.isArray(quoteData.records)?quoteData.records:[]){
+if(stock.common_stock_candidate&&
+["TWSE","TPEx"].includes(stock.market)&&
+String(stock.code).length===4){
+universe.set(stock.market+":"+stock.code,{
+code:String(stock.code),name:String(stock.name||""),market:stock.market
+});
+}
+}
+const indexStatuses=[];
+const indexProgress=[];
+for(const exchange of ["TWSE","TPEx"]){
+const r=await fetch("./historical/"+exchange.toLowerCase()+"/index.json",{
+cache:"no-store"
+});
+if(!r.ok){
+indexStatuses.push(exchange+"進度索引尚未建立");
+continue;
+}
+const marketIndex=await r.json();
+const indexedStocks=Array.isArray(marketIndex.stocks)?marketIndex.stocks:[];
+indexProgress.push(
+exchange+"完整 "+indexedStocks.filter(stock=>stock.complete===true).length+
+"/"+indexedStocks.length
+);
+for(const stock of indexedStocks){
+const code=String(stock.code||"");
+if(/^\d{4}$/.test(code)){
+universe.set(exchange+":"+code,{
+code,name:String(stock.name||""),market:exchange
+});
+}
+}
+}
+el("replayDate").value=String(quoteData.fetched_at||"").slice(0,10);
+el("replayStatus").textContent=
+"目前上市櫃名單 "+universe.size+" 檔。"+
+(indexProgress.length?"；"+indexProgress.join("；"):"")+
+(indexStatuses.length?"；"+indexStatuses.join("；"):"");
 }catch(e){
 el("status").textContent="歷史資料讀取失敗："+e.message;
 el("progress").textContent="請確認 history/index.json 已存在。";

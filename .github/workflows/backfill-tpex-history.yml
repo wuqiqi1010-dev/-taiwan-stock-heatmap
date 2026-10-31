@@ -1,0 +1,73 @@
+name: TPEx Historical Backfill Auto
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 * * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: historical-backfill
+  cancel-in-progress: false
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Find next incomplete TPEx batch
+        id: batch
+        shell: bash
+        run: |
+          python scripts/backfill_integrity.py \
+            --market TPEx --plan --months 7 >> "$GITHUB_OUTPUT"
+
+      - name: Show TPEx progress
+        run: |
+          echo "TPEx candidates: ${{ steps.batch.outputs.total }}"
+          echo "Next offset: ${{ steps.batch.outputs.offset }}"
+
+      - name: Backfill next TPEx batch
+        if: steps.batch.outputs.offset != '-1'
+        run: |
+          python scripts/tpex_backfill.py \
+            --offset "${{ steps.batch.outputs.offset }}" \
+            --limit 40 \
+            --months 7
+
+      - name: Commit TPEx data and retry state
+        if: steps.batch.outputs.offset != '-1'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          git add historical/tpex/
+
+          if ! git diff --cached --quiet; then
+            git commit -m 'Auto backfill next TPEx batch'
+            git push
+          else
+            echo 'No changes to commit'
+          fi
+
+      - name: Verify saved TPEx batch
+        if: steps.batch.outputs.offset != '-1'
+        run: |
+          python scripts/backfill_integrity.py \
+            --market TPEx --check-batch \
+            --offset "${{ steps.batch.outputs.offset }}" --limit 40 --months 7
+
+      - name: All TPEx batches complete
+        if: steps.batch.outputs.offset == '-1'
+        run: |
+          echo "All current TPEx candidates passed monthly integrity validation."
+          echo "Only official quote rows are counted; trading suspensions and listing dates require separate official verification."
