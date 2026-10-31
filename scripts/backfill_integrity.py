@@ -1,4 +1,3 @@
-
 """Fail-closed TWSE cache validation and batch planning.
 
 A verified month proves fidelity to a successful official response, not
