@@ -10,7 +10,15 @@ import json
 import math
 import os
 import tempfile
-from backfill_integrity import candidates as select_candidates, digest, has_reached_first_weekday, inspect, read
+from backfill_integrity import (
+    LISTING_SOURCE,
+    candidates as select_candidates,
+    digest,
+    has_reached_first_weekday,
+    inspect,
+    month_not_started,
+    read,
+)
 import pathlib
 import socket
 import time
@@ -21,6 +29,7 @@ from zoneinfo import ZoneInfo
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "data.json"
 DEST = ROOT / "historical" / "twse"
+LISTING_URL = "https://openapi.twse.com.tw/v1/opendata/t187ap03_L"
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0",
@@ -62,8 +71,62 @@ def months_back(today, count):
             month = 12
 
 
+def fetch_listing_dates(codes):
+    rows = fetch(LISTING_URL)
+    if not isinstance(rows, list) or not rows:
+        raise ValueError("Invalid TWSE listing-date response")
+
+    wanted = {str(code) for code in codes}
+    dates = {}
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        code = str(row.get("公司代號", "")).strip()
+        if code not in wanted:
+            continue
+
+        value = str(row.get("上市日期", "")).strip()
+        if len(value) != 8 or not value.isdigit():
+            raise ValueError(f"Invalid official listing date for {code}: {value!r}")
+        try:
+            listing_date = dt.datetime.strptime(value, "%Y%m%d").date()
+        except ValueError as error:
+            raise ValueError(
+                f"Invalid official listing date for {code}: {value!r}"
+            ) from error
+
+        if code in dates and dates[code] != listing_date:
+            raise ValueError(f"Conflicting official listing dates for {code}")
+        dates[code] = listing_date
+
+    return dates
+
+
+def parse_integer_field(value):
+    text = str(value).strip()
+    parts = text.split(",")
+    if not parts[0].isdigit() or (
+        len(parts) > 1
+        and (
+            len(parts[0]) > 3
+            or any(len(part) != 3 or not part.isdigit() for part in parts[1:])
+        )
+    ):
+        return None
+    return int("".join(parts))
+
+
+def parse_error_month(error):
+    if not isinstance(error, dict):
+        return None
+    try:
+        return dt.date.fromisoformat(str(error.get("month", ""))).replace(day=1)
+    except ValueError:
+        return None
+
+
 def parse_monthly_row(row):
-    if not isinstance(row, (list, tuple)) or len(row) < 10:
+    if not isinstance(row, (list, tuple)) or len(row) != 10:
         return None
 
     try:
@@ -80,22 +143,28 @@ def parse_monthly_row(row):
         day = date.isoformat()
         close_text = str(row[6]).strip().replace(",", "")
         if close_text == "--":
-            volume = str(row[1]).strip().replace(",", "")
-            amount = str(row[2]).strip().replace(",", "")
-            trades = str(row[8]).strip().replace(",", "")
+            volume = parse_integer_field(row[1])
+            amount = parse_integer_field(row[2])
+            trades = parse_integer_field(row[8])
             prices = [str(value).strip() for value in row[3:7]]
-            if (
-                volume == amount == trades == "0"
-                and prices == ["--"] * 4
-            ):
-                return day, None
+            change = str(row[7]).strip()
+            remark = str(row[9]).strip()
+            if prices == ["--"] * 4 and change == "0.00" and not remark:
+                if volume == amount == trades == 0:
+                    return day, None, "no_trade"
+                if (
+                    volume is not None and volume > 0
+                    and amount is not None and amount > 0
+                    and trades is not None and trades > 0
+                ):
+                    return day, None, "no_price"
             return None
 
         close = float(close_text)
         if not math.isfinite(close) or close <= 0:
             return None
 
-        return day, close
+        return day, close, None
 
     except (
         ValueError,
@@ -109,7 +178,7 @@ def parse_close(row):
     parsed = parse_monthly_row(row)
     if parsed is None or parsed[1] is None:
         return None
-    return parsed
+    return parsed[:2]
 
 
 def existing_series(code):
@@ -180,6 +249,37 @@ def main():
     selected_months = (
         [target_month] if target_month else list(months_back(today, args.months))
     )
+    listing_months = list(selected_months)
+    if not target_month:
+        for row in batch:
+            old = read(DEST / f'{row["code"]}.json')
+            old_errors = old.get("errors", []) if isinstance(old, dict) else []
+            if isinstance(old_errors, list):
+                for error in old_errors:
+                    error_month = parse_error_month(error)
+                    if error_month and error_month not in listing_months:
+                        listing_months.append(error_month)
+    listing_dates = {}
+    if batch and any(not month_not_started(month, today) for month in listing_months):
+        try:
+            listing_dates = fetch_listing_dates(row["code"] for row in batch)
+        except (RuntimeError, ValueError) as error:
+            print(
+                "TWSE listing-date lookup failed; non-OK monthly responses "
+                f"will remain errors: {error}",
+                flush=True,
+            )
+        missing_listing_dates = sorted(
+            str(row["code"]) for row in batch
+            if str(row["code"]) not in listing_dates
+        )
+        if missing_listing_dates:
+            print(
+                "No official listing date for: "
+                + ", ".join(missing_listing_dates)
+                + "; non-OK monthly responses will remain errors",
+                flush=True,
+            )
     DEST.mkdir(parents=True, exist_ok=True)
     print(
         "TWSE candidates:", len(candidates), "offset:", args.offset,
@@ -200,15 +300,55 @@ def main():
                 not isinstance(error, dict)
                 or str(error.get("month", ""))[:7] != target_key
             ] if isinstance(previous_errors, list) else []
+            stock_months = list(selected_months)
         else:
-            errors = []
+            stock_months = list(selected_months)
+            if isinstance(previous_errors, list):
+                for error in previous_errors:
+                    error_month = parse_error_month(error)
+                    if error_month and error_month not in stock_months:
+                        stock_months.append(error_month)
+                stock_month_keys = {month.isoformat()[:7] for month in stock_months}
+                errors = []
+                for error in previous_errors:
+                    error_month = parse_error_month(error)
+                    if (
+                        error_month is None
+                        or error_month.isoformat()[:7] not in stock_month_keys
+                    ):
+                        errors.append(error)
+            else:
+                errors = [{'month': '', 'reason': 'Invalid prior errors structure'}]
         checks = old.get('month_checks', {}) if isinstance(old, dict) else {}
         if not isinstance(checks, dict):
             checks = {}
         checks = dict(checks)
 
-        for month in selected_months:
+        for month in stock_months:
             key = month.isoformat()[:7]
+            listing_date = listing_dates.get(str(code))
+            if listing_date:
+                next_month = (month.replace(day=28) + dt.timedelta(days=4)).replace(day=1)
+                month_end = next_month - dt.timedelta(days=1)
+                if month_end < listing_date:
+                    checks[key] = {
+                        "status": "not_listed",
+                        "checked_on": today.isoformat(),
+                        "listing_date": listing_date.isoformat(),
+                        "listing_source": LISTING_SOURCE,
+                    }
+                    errors = [
+                        error for error in errors
+                        if not isinstance(error, dict)
+                        or str(error.get("month", ""))[:7] != key
+                    ]
+                    print(
+                        f"{code} {key}: verified pre-listing month "
+                        f"(listed {listing_date.isoformat()})",
+                        flush=True,
+                    )
+                    continue
+
             # No trading weekday has occurred in this month yet.
             # Do not fetch an expected empty TWSE monthly response.
             if (month == today.replace(day=1)
@@ -239,20 +379,27 @@ def main():
                     raise ValueError('Empty monthly response; requires review')
                 monthly = {}
                 no_trade_days = []
+                no_price_days = []
                 for item in raw_rows:
                     parsed = parse_monthly_row(item)
                     if not parsed:
                         raise ValueError('Unparseable monthly row')
-                    day, close = parsed
+                    day, close, row_kind = parsed
                     if (
                         not day.startswith(key)
                         or day > today.isoformat()
                         or day in monthly
                         or day in no_trade_days
+                        or day in no_price_days
                     ):
                         raise ValueError('Wrong-month, future or duplicate row')
                     if close is None:
-                        no_trade_days.append(day)
+                        if row_kind == "no_trade":
+                            no_trade_days.append(day)
+                        elif row_kind == "no_price":
+                            no_price_days.append(day)
+                        else:
+                            raise ValueError("Unclassified row without a closing price")
                     else:
                         monthly[day] = close
                 verified = [{'date': day, 'close': close} for day, close in sorted(monthly.items())]
@@ -264,9 +411,10 @@ def main():
                     'count': len(verified),
                     'row_count': len(raw_rows),
                     'no_trade_days': sorted(no_trade_days),
+                    'no_price_days': sorted(no_price_days),
                     'sha256': digest(verified),
                 }
-            except Exception as error:
+            except (RuntimeError, ValueError, TypeError) as error:
                 errors.append({'month': str(month), 'reason': str(error)})
                 checks[key] = {'status': 'error', 'checked_on': today.isoformat(), 'reason': str(error)}
             time.sleep(0.45)
@@ -283,9 +431,7 @@ def main():
             "month_checks": checks,
             "last_attempt": dt.datetime.now(ZoneInfo('Asia/Taipei')).isoformat(),
         }
-        validation_months = list(months_back(today, args.months))
-        if target_month and target_month not in validation_months:
-            validation_months.append(target_month)
+        validation_months = stock_months
         output['validation'] = {
             'issues': inspect(output, code, validation_months, today)
         }

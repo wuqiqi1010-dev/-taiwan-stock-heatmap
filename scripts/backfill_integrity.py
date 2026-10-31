@@ -11,6 +11,8 @@ import json
 import math
 import pathlib
 
+LISTING_SOURCE = "TWSE OpenAPI t187ap03_L"
+
 
 def digest(series):
     return hashlib.sha256(
@@ -129,7 +131,38 @@ def inspect(data, code, months, today):
                 issues.append(f"{key}:unexpected_early_rows")
             continue
 
-        if not rows or check.get("status") != "verified":
+        if check.get("status") == "not_listed":
+            listing_value = check.get("listing_date")
+            try:
+                listing_date = dt.date.fromisoformat(listing_value)
+                if listing_date.isoformat() != listing_value:
+                    raise ValueError()
+            except (TypeError, ValueError):
+                issues.append(f"{key}:invalid_listing_date")
+                continue
+
+            next_month = (month.replace(day=28) + dt.timedelta(days=4)).replace(day=1)
+            month_end = next_month - dt.timedelta(days=1)
+            checked_on = check.get("checked_on")
+            try:
+                checked_date = dt.date.fromisoformat(checked_on)
+                if checked_date.isoformat() != checked_on or checked_date > today:
+                    raise ValueError()
+            except (TypeError, ValueError):
+                issues.append(f"{key}:invalid_listing_check_date")
+
+            if (
+                check.get("listing_source") != LISTING_SOURCE
+                or month_end >= listing_date
+                or rows
+                or "row_count" in check
+                or "no_trade_days" in check
+                or "no_price_days" in check
+            ):
+                issues.append(f"{key}:invalid_not_listed_evidence")
+            continue
+
+        if check.get("status") != "verified":
             issues.append(f"{key}:unverified_or_missing")
 
         elif (
@@ -137,6 +170,8 @@ def inspect(data, code, months, today):
             or check.get("sha256") != digest(rows)
         ):
             issues.append(f"{key}:content_mismatch")
+        elif not rows and "row_count" not in check:
+            issues.append(f"{key}:unverified_or_missing")
 
         if (
             key == today.isoformat()[:7]
@@ -145,10 +180,16 @@ def inspect(data, code, months, today):
         ):
             issues.append(f"{key}:stale")
 
-        if "row_count" in check or "no_trade_days" in check:
+        if (
+            "row_count" in check
+            or "no_trade_days" in check
+            or "no_price_days" in check
+        ):
             no_trade_days = check.get('no_trade_days')
+            no_price_days = check.get('no_price_days', [])
             row_count = check.get('row_count')
             valid_no_trade_days = []
+            valid_no_price_days = []
             if isinstance(no_trade_days, list):
                 for day in no_trade_days:
                     try:
@@ -166,10 +207,29 @@ def inspect(data, code, months, today):
                         issues.append(f'{key}:invalid_no_trade_day')
             else:
                 issues.append(f'{key}:invalid_no_trade_day')
+            if isinstance(no_price_days, list):
+                for day in no_price_days:
+                    try:
+                        date = dt.date.fromisoformat(day)
+                        if (
+                            date.isoformat() != day
+                            or not day.startswith(key)
+                            or date > today
+                            or day in seen
+                            or day in valid_no_trade_days
+                            or day in valid_no_price_days
+                        ):
+                            raise ValueError()
+                        valid_no_price_days.append(day)
+                    except (TypeError, ValueError):
+                        issues.append(f'{key}:invalid_no_price_day')
+            else:
+                issues.append(f'{key}:invalid_no_price_day')
             if (
                 isinstance(row_count, bool)
                 or not isinstance(row_count, int)
-                or row_count != len(rows) + len(valid_no_trade_days)
+                or row_count
+                != len(rows) + len(valid_no_trade_days) + len(valid_no_price_days)
             ):
                 issues.append(f'{key}:row_count_mismatch')
     return sorted(set(issues))
