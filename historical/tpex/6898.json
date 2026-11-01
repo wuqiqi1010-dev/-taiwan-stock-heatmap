@@ -1,0 +1,90 @@
+{
+  "code": "6898",
+  "name": "程曦資訊",
+  "market": "TPEx",
+  "source": "TPEx 個股日成交資訊",
+  "source_url": "https://www.tpex.org.tw/www/zh-tw/afterTrading/tradingStock",
+  "price_type": "unadjusted close",
+  "series": [],
+  "errors": [
+    {
+      "month": "2026-11-01",
+      "reason": "Empty TPEx monthly response; requires review"
+    },
+    {
+      "month": "2026-10-01",
+      "reason": "TPEx rows do not cover official trading days (missing=['2026-10-01', '2026-10-02', '2026-10-05', '2026-10-06', '2026-10-07', '2026-10-08', '2026-10-12', '2026-10-13', '2026-10-14', '2026-10-15', '2026-10-16', '2026-10-19', '2026-10-20', '2026-10-21', '2026-10-22'], unexpected=[])"
+    },
+    {
+      "month": "2026-09-01",
+      "reason": "Empty TPEx monthly response; requires review"
+    },
+    {
+      "month": "2026-08-01",
+      "reason": "Empty TPEx monthly response; requires review"
+    },
+    {
+      "month": "2026-07-01",
+      "reason": "Empty TPEx monthly response; requires review"
+    },
+    {
+      "month": "2026-06-01",
+      "reason": "Empty TPEx monthly response; requires review"
+    },
+    {
+      "month": "2026-05-01",
+      "reason": "Empty TPEx monthly response; requires review"
+    }
+  ],
+  "month_checks": {
+    "2026-11": {
+      "status": "error",
+      "checked_on": "2026-11-02",
+      "reason": "Empty TPEx monthly response; requires review"
+    },
+    "2026-10": {
+      "status": "error",
+      "checked_on": "2026-11-02",
+      "reason": "TPEx rows do not cover official trading days (missing=['2026-10-01', '2026-10-02', '2026-10-05', '2026-10-06', '2026-10-07', '2026-10-08', '2026-10-12', '2026-10-13', '2026-10-14', '2026-10-15', '2026-10-16', '2026-10-19', '2026-10-20', '2026-10-21', '2026-10-22'], unexpected=[])"
+    },
+    "2026-09": {
+      "status": "error",
+      "checked_on": "2026-11-02",
+      "reason": "Empty TPEx monthly response; requires review"
+    },
+    "2026-08": {
+      "status": "error",
+      "checked_on": "2026-11-02",
+      "reason": "Empty TPEx monthly response; requires review"
+    },
+    "2026-07": {
+      "status": "error",
+      "checked_on": "2026-11-02",
+      "reason": "Empty TPEx monthly response; requires review"
+    },
+    "2026-06": {
+      "status": "error",
+      "checked_on": "2026-11-02",
+      "reason": "Empty TPEx monthly response; requires review"
+    },
+    "2026-05": {
+      "status": "error",
+      "checked_on": "2026-11-02",
+      "reason": "Empty TPEx monthly response; requires review"
+    }
+  },
+  "last_attempt": "2026-11-02T01:43:40.741635+08:00",
+  "validation": {
+    "issues": [
+      "2026-05:unverified_or_missing",
+      "2026-06:unverified_or_missing",
+      "2026-07:unverified_or_missing",
+      "2026-08:unverified_or_missing",
+      "2026-09:unverified_or_missing",
+      "2026-10:unverified_or_missing",
+      "2026-11:unverified_or_missing",
+      "fetch_errors"
+    ],
+    "complete": false
+  }
+}
