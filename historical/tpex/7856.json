@@ -1,0 +1,237 @@
+{
+  "code": "7856",
+  "name": "漢測",
+  "market": "TPEx",
+  "source": "TPEx 個股日成交資訊",
+  "source_url": "https://www.tpex.org.tw/www/zh-tw/afterTrading/tradingStock",
+  "price_type": "unadjusted close",
+  "series": [
+    {
+      "date": "2026-09-22",
+      "close": 4730.0
+    },
+    {
+      "date": "2026-09-23",
+      "close": 4730.0
+    },
+    {
+      "date": "2026-09-24",
+      "close": 4605.0
+    },
+    {
+      "date": "2026-09-29",
+      "close": 4315.0
+    },
+    {
+      "date": "2026-09-30",
+      "close": 4250.0
+    },
+    {
+      "date": "2026-10-01",
+      "close": 4300.0
+    },
+    {
+      "date": "2026-10-02",
+      "close": 4195.0
+    },
+    {
+      "date": "2026-10-05",
+      "close": 4280.0
+    },
+    {
+      "date": "2026-10-06",
+      "close": 4190.0
+    },
+    {
+      "date": "2026-10-07",
+      "close": 4380.0
+    },
+    {
+      "date": "2026-10-08",
+      "close": 4260.0
+    },
+    {
+      "date": "2026-10-12",
+      "close": 3835.0
+    },
+    {
+      "date": "2026-10-13",
+      "close": 3800.0
+    },
+    {
+      "date": "2026-10-14",
+      "close": 3665.0
+    },
+    {
+      "date": "2026-10-15",
+      "close": 3300.0
+    },
+    {
+      "date": "2026-10-16",
+      "close": 3500.0
+    },
+    {
+      "date": "2026-10-19",
+      "close": 3470.0
+    },
+    {
+      "date": "2026-10-20",
+      "close": 3360.0
+    },
+    {
+      "date": "2026-10-21",
+      "close": 3445.0
+    },
+    {
+      "date": "2026-10-22",
+      "close": 3410.0
+    },
+    {
+      "date": "2026-10-27",
+      "close": 3335.0
+    },
+    {
+      "date": "2026-10-28",
+      "close": 3535.0
+    },
+    {
+      "date": "2026-10-29",
+      "close": 3505.0
+    },
+    {
+      "date": "2026-10-30",
+      "close": 3245.0
+    }
+  ],
+  "errors": [
+    {
+      "month": "2026-11-01",
+      "reason": "Empty TPEx monthly response; requires review"
+    }
+  ],
+  "month_checks": {
+    "2026-11": {
+      "status": "error",
+      "checked_on": "2026-11-02",
+      "reason": "Empty TPEx monthly response; requires review"
+    },
+    "2026-10": {
+      "status": "verified",
+      "checked_on": "2026-11-02",
+      "count": 19,
+      "row_count": 19,
+      "no_trade_days": [],
+      "no_trade_observations": [],
+      "no_price_days": [],
+      "no_price_observations": [],
+      "trading_days": [
+        "2026-10-01",
+        "2026-10-02",
+        "2026-10-05",
+        "2026-10-06",
+        "2026-10-07",
+        "2026-10-08",
+        "2026-10-12",
+        "2026-10-13",
+        "2026-10-14",
+        "2026-10-15",
+        "2026-10-16",
+        "2026-10-19",
+        "2026-10-20",
+        "2026-10-21",
+        "2026-10-22",
+        "2026-10-27",
+        "2026-10-28",
+        "2026-10-29",
+        "2026-10-30"
+      ],
+      "trading_calendar_source": "TPEx official monthly tradingIndex API",
+      "source_rows_sha256": "6f45cc5477e1f9ea26f281484f792d327abc12e5ccedfbd3a80c4b25524969e1",
+      "sha256": "a9fec696c7f094cdb638fde44a1b1264b0c9f78f8ca77bc8cbfa535c6c5cc594"
+    },
+    "2026-09": {
+      "status": "verified",
+      "checked_on": "2026-11-02",
+      "count": 5,
+      "row_count": 5,
+      "no_trade_days": [],
+      "no_trade_observations": [],
+      "no_price_days": [],
+      "no_price_observations": [],
+      "trading_days": [
+        "2026-09-01",
+        "2026-09-02",
+        "2026-09-03",
+        "2026-09-04",
+        "2026-09-07",
+        "2026-09-08",
+        "2026-09-09",
+        "2026-09-10",
+        "2026-09-11",
+        "2026-09-14",
+        "2026-09-15",
+        "2026-09-16",
+        "2026-09-17",
+        "2026-09-18",
+        "2026-09-21",
+        "2026-09-22",
+        "2026-09-23",
+        "2026-09-24",
+        "2026-09-29",
+        "2026-09-30"
+      ],
+      "trading_calendar_source": "TPEx official monthly tradingIndex API",
+      "source_rows_sha256": "65298441c98a695ce4454fb18918dc538d539932cc193e9a36e8527623b8c057",
+      "sha256": "465a888c7a49ce762e3317e86121cb24cb7ec51bd142d8af639068e544bd5350",
+      "listing_date": "2026-09-22",
+      "listing_source": "TPEx official monthly quote first-listing marker",
+      "listing_marker": {
+        "date": "2026-09-22",
+        "row": [
+          "115/09/22*",
+          "2,112",
+          "9,870,049",
+          "4,400.00",
+          "4,995.00",
+          "4,305.00",
+          "4,730.00",
+          "2,480.00",
+          "7,361"
+        ],
+        "sha256": "7a10af6235196b487ef46b61abaa928ae4762431816be0ff4cbc02ec1651584c"
+      }
+    },
+    "2026-08": {
+      "status": "not_listed",
+      "checked_on": "2026-11-02",
+      "listing_date": "2026-09-22",
+      "listing_source": "TPEx official monthly quote first-listing marker"
+    },
+    "2026-07": {
+      "status": "not_listed",
+      "checked_on": "2026-11-02",
+      "listing_date": "2026-09-22",
+      "listing_source": "TPEx official monthly quote first-listing marker"
+    },
+    "2026-06": {
+      "status": "not_listed",
+      "checked_on": "2026-11-02",
+      "listing_date": "2026-09-22",
+      "listing_source": "TPEx official monthly quote first-listing marker"
+    },
+    "2026-05": {
+      "status": "not_listed",
+      "checked_on": "2026-11-02",
+      "listing_date": "2026-09-22",
+      "listing_source": "TPEx official monthly quote first-listing marker"
+    }
+  },
+  "last_attempt": "2026-11-02T03:46:24.103741+08:00",
+  "validation": {
+    "issues": [
+      "2026-11:unverified_or_missing",
+      "fetch_errors"
+    ],
+    "complete": false
+  }
+}
