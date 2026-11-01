@@ -22,6 +22,7 @@ from backfill_integrity import (
     inspect,
     month_not_started,
     read,
+    TPEX_LISTING_SOURCE,
 )
 
 SOURCE = ROOT / "data.json"
@@ -31,12 +32,19 @@ SOURCE_URL = (
 )
 
 
-def parse_monthly_row(row):
+def parse_monthly_observation(row, listing_marker_allowed=False):
     if not isinstance(row, (list, tuple)) or len(row) != 9:
         return None
 
     try:
-        parts = str(row[0]).strip().split("/")
+        raw_date = str(row[0]).strip()
+        has_listing_marker = raw_date.endswith("*")
+        if "*" in raw_date and (
+            not has_listing_marker or raw_date.count("*") != 1
+            or not listing_marker_allowed
+        ):
+            return None
+        parts = raw_date.removesuffix("*").split("/")
         if len(parts) != 3:
             return None
 
@@ -44,32 +52,51 @@ def parse_monthly_row(row):
         if year < 1911:
             year += 1911
         date = dt.date(year, month, day)
+        if date.weekday() >= 5:
+            return None
         volume = parse_integer_field(row[1])
         amount = parse_integer_field(row[2])
         trades = parse_integer_field(row[8])
+        if any(value is None or value < 0 for value in (volume, amount, trades)):
+            return None
+
+        price_fields = [str(value).strip() for value in row[3:7]]
+        if price_fields == ["--"] * 4:
+            change = float(str(row[7]).strip().replace(",", ""))
+            if not math.isfinite(change) or change != 0:
+                return None
+            if volume == amount == trades == 0:
+                return date.isoformat(), None, "no_trade", has_listing_marker
+            if trades == 0:
+                return None
+            return date.isoformat(), None, "no_price", has_listing_marker
+        if any(value == "--" for value in price_fields):
+            return None
         open_price, high, low, close = (
-            float(str(value).strip().replace(",", ""))
-            for value in row[3:7]
+            float(value.replace(",", "")) for value in price_fields
         )
         if (
-            date.weekday() >= 5
-            or any(
+            any(
                 not math.isfinite(price) or price <= 0
                 for price in (open_price, high, low, close)
             )
             or low > min(open_price, close)
             or high < max(open_price, close)
-            or volume is None
             or volume <= 0
-            or amount is None
             or amount <= 0
-            or trades is None
             or trades <= 0
         ):
             return None
-        return date.isoformat(), close
+        return date.isoformat(), close, "quote", has_listing_marker
     except (TypeError, ValueError):
         return None
+
+
+def parse_monthly_row(row):
+    observation = parse_monthly_observation(row)
+    if observation is None or observation[2] != "quote":
+        return None
+    return observation[:2]
 
 
 def fetch_month(code, month):
@@ -109,15 +136,28 @@ def fetch_month(code, month):
     ):
         raise ValueError("TPEx monthly row count mismatch")
 
+    notes = table.get("notes", [])
+    listing_marker_allowed = (
+        isinstance(notes, list)
+        and any(
+            isinstance(note, str)
+            and "表示該日為該股票上櫃掛牌首日" in note
+            for note in notes
+        )
+    )
     result = {}
+    no_trade_days = []
+    no_trade_observations = []
+    no_price_observations = []
+    listing_dates = []
     previous_day = ""
     month_key = month.isoformat()[:7]
     today = dt.datetime.now(ZoneInfo("Asia/Taipei")).date()
     for row in rows:
-        parsed = parse_monthly_row(row)
+        parsed = parse_monthly_observation(row, listing_marker_allowed)
         if parsed is None:
             raise ValueError("Unparseable or invalid TPEx quote row")
-        day, close = parsed
+        day, close, observation_type, has_listing_marker = parsed
         if (
             not day.startswith(month_key)
             or day > today.isoformat()
@@ -125,10 +165,38 @@ def fetch_month(code, month):
             or day in result
         ):
             raise ValueError("Wrong-month, future, duplicate or unsorted TPEx row")
-        result[day] = close
+        if observation_type == "quote":
+            result[day] = close
+        elif observation_type == "no_trade":
+            no_trade_days.append(day)
+            no_trade_observations.append({
+                "date": day,
+                "volume": parse_integer_field(row[1]),
+                "amount": parse_integer_field(row[2]),
+                "trades": parse_integer_field(row[8]),
+            })
+        else:
+            no_price_observations.append({
+                "date": day,
+                "volume": parse_integer_field(row[1]),
+                "amount": parse_integer_field(row[2]),
+                "trades": parse_integer_field(row[8]),
+            })
+        if has_listing_marker:
+            listing_dates.append(day)
         previous_day = day
 
-    return result, str(data.get("name", "")).strip()
+    if len(listing_dates) > 1:
+        raise ValueError("Multiple TPEx first-listing markers in one month")
+    return {
+        "quotes": result,
+        "name": str(data.get("name", "")).strip(),
+        "no_trade_days": no_trade_days,
+        "no_trade_observations": no_trade_observations,
+        "no_price_observations": no_price_observations,
+        "listing_date": listing_dates[0] if listing_dates else None,
+        "source_rows_sha256": digest(rows),
+    }
 
 
 def parse_error_month(error):
@@ -149,13 +217,6 @@ def month_is_verified(data, code, month, today):
         return False
     check = checks.get(key)
     if not isinstance(check, dict) or check.get("status") != "verified":
-        return False
-    rows = [
-        item for item in data.get("series", [])
-        if isinstance(item, dict)
-        and str(item.get("date", "")).startswith(key)
-    ] if isinstance(data.get("series"), list) else []
-    if not rows:
         return False
     if any(parse_error_month(error) == month for error in data.get("errors", [])):
         return False
@@ -216,6 +277,35 @@ def update_stock(
                 errors.append(error)
 
     official_name = ""
+    listing_date = None
+    if isinstance(old, dict) and isinstance(old.get("month_checks"), dict):
+        old_series_days = {
+            item.get("date")
+            for item in old.get("series", [])
+            if isinstance(item, dict)
+        } if isinstance(old.get("series"), list) else set()
+        for checked_month, check in old["month_checks"].items():
+            if (
+                isinstance(check, dict)
+                and check.get("status") == "verified"
+                and check.get("listing_source") == TPEX_LISTING_SOURCE
+            ):
+                try:
+                    candidate_date = dt.date.fromisoformat(
+                        check.get("listing_date")
+                    )
+                except (TypeError, ValueError):
+                    continue
+                if (
+                    candidate_date.isoformat().startswith(checked_month)
+                    and candidate_date.isoformat() in old_series_days
+                    and month_is_verified(
+                        old, code, candidate_date.replace(day=1), today
+                    )
+                ):
+                    listing_date = candidate_date
+                    break
+
     for month in stock_months:
         key = month.isoformat()[:7]
         if month_not_started(month, today):
@@ -223,6 +313,26 @@ def update_stock(
                 "status": "not_started",
                 "checked_on": today.isoformat(),
             }
+            continue
+        next_month = (
+            month.replace(day=28) + dt.timedelta(days=4)
+        ).replace(day=1)
+        month_end = next_month - dt.timedelta(days=1)
+        if listing_date and month_end < listing_date:
+            checks[key] = {
+                "status": "not_listed",
+                "checked_on": today.isoformat(),
+                "listing_date": listing_date.isoformat(),
+                "listing_source": TPEX_LISTING_SOURCE,
+            }
+            errors = [
+                error for error in errors
+                if parse_error_month(error) != month
+            ]
+            print(
+                f"{code} {key}: verified pre-listing month "
+                f"(listed {listing_date.isoformat()})"
+            )
             continue
         if (
             not refresh_verified
@@ -233,7 +343,9 @@ def update_stock(
             continue
 
         try:
-            monthly, official_name = fetch_month(code, month)
+            result = fetch_month(code, month)
+            monthly = result["quotes"]
+            official_name = result["name"]
             verified = [
                 {"date": day, "close": close}
                 for day, close in sorted(monthly.items())
@@ -248,17 +360,35 @@ def update_stock(
                 "status": "verified",
                 "checked_on": today.isoformat(),
                 "count": len(verified),
-                "row_count": len(verified),
-                "no_trade_days": [],
-                "no_price_days": [],
+                "row_count": (
+                    len(verified)
+                    + len(result["no_trade_days"])
+                    + len(result["no_price_observations"])
+                ),
+                "no_trade_days": result["no_trade_days"],
+                "no_trade_observations": result["no_trade_observations"],
+                "no_price_days": [
+                    item["date"]
+                    for item in result["no_price_observations"]
+                ],
+                "no_price_observations": result["no_price_observations"],
+                "source_rows_sha256": result["source_rows_sha256"],
                 "sha256": digest(verified),
             }
+            if result["listing_date"]:
+                listing_date = dt.date.fromisoformat(result["listing_date"])
+                checks[key]["listing_date"] = result["listing_date"]
+                checks[key]["listing_source"] = TPEX_LISTING_SOURCE
             errors = [
                 error for error in errors
                 if parse_error_month(error) != month
             ]
-            print(f"{code} {key}: verified {len(verified)} official quotes")
-        except (RuntimeError, ValueError, TypeError, OSError) as error:
+            print(
+                f"{code} {key}: verified {len(verified)} official quotes "
+                f"({len(result['no_price_observations'])} no-price, "
+                f"{len(result['no_trade_days'])} no-trade)"
+            )
+        except (KeyError, RuntimeError, ValueError, TypeError, OSError) as error:
             checks[key] = {
                 "status": "error",
                 "checked_on": today.isoformat(),
