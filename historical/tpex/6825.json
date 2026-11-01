@@ -1,0 +1,116 @@
+{
+  "code": "6825",
+  "name": "和暢科技",
+  "market": "TPEx",
+  "source": "TPEx 個股日成交資訊",
+  "source_url": "https://www.tpex.org.tw/www/zh-tw/afterTrading/tradingStock",
+  "price_type": "unadjusted close",
+  "series": [
+    {
+      "date": "2026-10-30",
+      "close": 25.95
+    }
+  ],
+  "errors": [
+    {
+      "month": "2026-11-01",
+      "reason": "Empty TPEx monthly response; requires review"
+    }
+  ],
+  "month_checks": {
+    "2026-11": {
+      "status": "error",
+      "checked_on": "2026-11-02",
+      "reason": "Empty TPEx monthly response; requires review"
+    },
+    "2026-10": {
+      "status": "verified",
+      "checked_on": "2026-11-02",
+      "count": 1,
+      "row_count": 1,
+      "no_trade_days": [],
+      "no_trade_observations": [],
+      "no_price_days": [],
+      "no_price_observations": [],
+      "trading_days": [
+        "2026-10-01",
+        "2026-10-02",
+        "2026-10-05",
+        "2026-10-06",
+        "2026-10-07",
+        "2026-10-08",
+        "2026-10-12",
+        "2026-10-13",
+        "2026-10-14",
+        "2026-10-15",
+        "2026-10-16",
+        "2026-10-19",
+        "2026-10-20",
+        "2026-10-21",
+        "2026-10-22",
+        "2026-10-27",
+        "2026-10-28",
+        "2026-10-29",
+        "2026-10-30"
+      ],
+      "trading_calendar_source": "TPEx official monthly tradingIndex API",
+      "source_rows_sha256": "48f468d45c0c320634593e53910e391d1fdd20947c41504b048dc43fe455be9b",
+      "sha256": "be53c94310c7a49485e53af6db28f8c90820ac080a84874efa2c38349936eb4d",
+      "listing_date": "2026-10-30",
+      "listing_source": "TPEx official monthly quote first-listing marker",
+      "listing_marker": {
+        "date": "2026-10-30",
+        "row": [
+          "115/10/30*",
+          "1,777",
+          "41,242",
+          "21.90",
+          "25.95",
+          "21.65",
+          "25.95",
+          "3.15",
+          "982"
+        ],
+        "sha256": "a6dbee0c67ad7bda19da15b3d1f5eb26c53520418ed229208f7599101163bb3b"
+      }
+    },
+    "2026-09": {
+      "status": "not_listed",
+      "checked_on": "2026-11-02",
+      "listing_date": "2026-10-30",
+      "listing_source": "TPEx official monthly quote first-listing marker"
+    },
+    "2026-08": {
+      "status": "not_listed",
+      "checked_on": "2026-11-02",
+      "listing_date": "2026-10-30",
+      "listing_source": "TPEx official monthly quote first-listing marker"
+    },
+    "2026-07": {
+      "status": "not_listed",
+      "checked_on": "2026-11-02",
+      "listing_date": "2026-10-30",
+      "listing_source": "TPEx official monthly quote first-listing marker"
+    },
+    "2026-06": {
+      "status": "not_listed",
+      "checked_on": "2026-11-02",
+      "listing_date": "2026-10-30",
+      "listing_source": "TPEx official monthly quote first-listing marker"
+    },
+    "2026-05": {
+      "status": "not_listed",
+      "checked_on": "2026-11-02",
+      "listing_date": "2026-10-30",
+      "listing_source": "TPEx official monthly quote first-listing marker"
+    }
+  },
+  "last_attempt": "2026-11-02T00:48:43.128153+08:00",
+  "validation": {
+    "issues": [
+      "2026-11:unverified_or_missing",
+      "fetch_errors"
+    ],
+    "complete": false
+  }
+}
