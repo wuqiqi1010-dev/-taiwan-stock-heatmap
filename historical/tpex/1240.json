@@ -259,6 +259,158 @@
       "close": 55.2
     },
     {
+      "date": "2026-08-03",
+      "close": 55.4
+    },
+    {
+      "date": "2026-08-04",
+      "close": 55.2
+    },
+    {
+      "date": "2026-08-05",
+      "close": 55.1
+    },
+    {
+      "date": "2026-08-06",
+      "close": 55.0
+    },
+    {
+      "date": "2026-08-07",
+      "close": 54.8
+    },
+    {
+      "date": "2026-08-10",
+      "close": 54.9
+    },
+    {
+      "date": "2026-08-11",
+      "close": 55.8
+    },
+    {
+      "date": "2026-08-12",
+      "close": 56.4
+    },
+    {
+      "date": "2026-08-13",
+      "close": 56.4
+    },
+    {
+      "date": "2026-08-14",
+      "close": 56.7
+    },
+    {
+      "date": "2026-08-17",
+      "close": 56.8
+    },
+    {
+      "date": "2026-08-18",
+      "close": 56.9
+    },
+    {
+      "date": "2026-08-19",
+      "close": 57.1
+    },
+    {
+      "date": "2026-08-20",
+      "close": 57.1
+    },
+    {
+      "date": "2026-08-21",
+      "close": 57.0
+    },
+    {
+      "date": "2026-08-24",
+      "close": 57.1
+    },
+    {
+      "date": "2026-08-25",
+      "close": 56.9
+    },
+    {
+      "date": "2026-08-26",
+      "close": 57.3
+    },
+    {
+      "date": "2026-08-28",
+      "close": 57.2
+    },
+    {
+      "date": "2026-08-31",
+      "close": 57.1
+    },
+    {
+      "date": "2026-09-01",
+      "close": 58.0
+    },
+    {
+      "date": "2026-09-02",
+      "close": 55.2
+    },
+    {
+      "date": "2026-09-03",
+      "close": 55.0
+    },
+    {
+      "date": "2026-09-04",
+      "close": 55.5
+    },
+    {
+      "date": "2026-09-07",
+      "close": 55.3
+    },
+    {
+      "date": "2026-09-08",
+      "close": 55.3
+    },
+    {
+      "date": "2026-09-09",
+      "close": 55.3
+    },
+    {
+      "date": "2026-09-10",
+      "close": 55.3
+    },
+    {
+      "date": "2026-09-11",
+      "close": 54.9
+    },
+    {
+      "date": "2026-09-14",
+      "close": 55.4
+    },
+    {
+      "date": "2026-09-15",
+      "close": 55.2
+    },
+    {
+      "date": "2026-09-16",
+      "close": 55.2
+    },
+    {
+      "date": "2026-09-17",
+      "close": 55.6
+    },
+    {
+      "date": "2026-09-22",
+      "close": 54.8
+    },
+    {
+      "date": "2026-09-23",
+      "close": 54.7
+    },
+    {
+      "date": "2026-09-24",
+      "close": 55.2
+    },
+    {
+      "date": "2026-09-29",
+      "close": 53.8
+    },
+    {
+      "date": "2026-09-30",
+      "close": 54.3
+    },
+    {
       "date": "2026-10-01",
       "close": 54.1
     },
@@ -337,71 +489,259 @@
   ],
   "errors": [
     {
-      "month": "2026-09-01",
-      "reason": "Unparseable or invalid TPEx quote row"
-    },
-    {
-      "month": "2026-08-01",
-      "reason": "Unparseable or invalid TPEx quote row"
+      "month": "2026-11-01",
+      "reason": "Empty TPEx monthly response; requires review"
     }
   ],
   "month_checks": {
     "2026-11": {
-      "status": "not_started",
-      "checked_on": "2026-11-01"
+      "status": "error",
+      "checked_on": "2026-11-02",
+      "reason": "Empty TPEx monthly response; requires review"
     },
     "2026-10": {
       "status": "verified",
-      "checked_on": "2026-11-01",
+      "checked_on": "2026-11-02",
       "count": 19,
       "row_count": 19,
       "no_trade_days": [],
+      "no_trade_observations": [],
       "no_price_days": [],
+      "no_price_observations": [],
+      "trading_days": [
+        "2026-10-01",
+        "2026-10-02",
+        "2026-10-05",
+        "2026-10-06",
+        "2026-10-07",
+        "2026-10-08",
+        "2026-10-12",
+        "2026-10-13",
+        "2026-10-14",
+        "2026-10-15",
+        "2026-10-16",
+        "2026-10-19",
+        "2026-10-20",
+        "2026-10-21",
+        "2026-10-22",
+        "2026-10-27",
+        "2026-10-28",
+        "2026-10-29",
+        "2026-10-30"
+      ],
+      "trading_calendar_source": "TPEx official monthly tradingIndex API",
+      "source_rows_sha256": "ae6823bfd1082424a2431666173bd2c50ffdf187512f69e804f4c118b120fcdd",
       "sha256": "7017517b71d3c6c3529b6e6d9b68891cc863e7a8725be220e5f6b82543602466"
     },
     "2026-09": {
-      "status": "error",
-      "checked_on": "2026-11-01",
-      "reason": "Unparseable or invalid TPEx quote row"
+      "status": "verified",
+      "checked_on": "2026-11-02",
+      "count": 18,
+      "row_count": 20,
+      "no_trade_days": [],
+      "no_trade_observations": [],
+      "no_price_days": [
+        "2026-09-18",
+        "2026-09-21"
+      ],
+      "no_price_observations": [
+        {
+          "date": "2026-09-18",
+          "volume": 0,
+          "amount": 5,
+          "trades": 3
+        },
+        {
+          "date": "2026-09-21",
+          "volume": 0,
+          "amount": 25,
+          "trades": 12
+        }
+      ],
+      "trading_days": [
+        "2026-09-01",
+        "2026-09-02",
+        "2026-09-03",
+        "2026-09-04",
+        "2026-09-07",
+        "2026-09-08",
+        "2026-09-09",
+        "2026-09-10",
+        "2026-09-11",
+        "2026-09-14",
+        "2026-09-15",
+        "2026-09-16",
+        "2026-09-17",
+        "2026-09-18",
+        "2026-09-21",
+        "2026-09-22",
+        "2026-09-23",
+        "2026-09-24",
+        "2026-09-29",
+        "2026-09-30"
+      ],
+      "trading_calendar_source": "TPEx official monthly tradingIndex API",
+      "source_rows_sha256": "d530896c92b019ea037b72a30527777bd25c2d1cac0a6fc62020e1a1cea8f90d",
+      "sha256": "4a54460f4efaefab2e84abc73315c2c9fd456a28c5bd870d53bf2cef5d756665"
     },
     "2026-08": {
-      "status": "error",
-      "checked_on": "2026-11-01",
-      "reason": "Unparseable or invalid TPEx quote row"
+      "status": "verified",
+      "checked_on": "2026-11-02",
+      "count": 20,
+      "row_count": 21,
+      "no_trade_days": [],
+      "no_trade_observations": [],
+      "no_price_days": [
+        "2026-08-27"
+      ],
+      "no_price_observations": [
+        {
+          "date": "2026-08-27",
+          "volume": 0,
+          "amount": 11,
+          "trades": 14
+        }
+      ],
+      "trading_days": [
+        "2026-08-03",
+        "2026-08-04",
+        "2026-08-05",
+        "2026-08-06",
+        "2026-08-07",
+        "2026-08-10",
+        "2026-08-11",
+        "2026-08-12",
+        "2026-08-13",
+        "2026-08-14",
+        "2026-08-17",
+        "2026-08-18",
+        "2026-08-19",
+        "2026-08-20",
+        "2026-08-21",
+        "2026-08-24",
+        "2026-08-25",
+        "2026-08-26",
+        "2026-08-27",
+        "2026-08-28",
+        "2026-08-31"
+      ],
+      "trading_calendar_source": "TPEx official monthly tradingIndex API",
+      "source_rows_sha256": "254afc322d1109ecc039589545d527cc75cef7fba9c1a235a63d1ed5e12e0cc0",
+      "sha256": "51bf6a9b43a6ef22f5686c2cdb973135f4bed5c249720703bb9da47d9461afa2"
     },
     "2026-07": {
       "status": "verified",
-      "checked_on": "2026-11-01",
+      "checked_on": "2026-11-02",
       "count": 22,
       "row_count": 22,
       "no_trade_days": [],
+      "no_trade_observations": [],
       "no_price_days": [],
+      "no_price_observations": [],
+      "trading_days": [
+        "2026-07-01",
+        "2026-07-02",
+        "2026-07-03",
+        "2026-07-06",
+        "2026-07-07",
+        "2026-07-08",
+        "2026-07-09",
+        "2026-07-13",
+        "2026-07-14",
+        "2026-07-15",
+        "2026-07-16",
+        "2026-07-17",
+        "2026-07-20",
+        "2026-07-21",
+        "2026-07-22",
+        "2026-07-23",
+        "2026-07-24",
+        "2026-07-27",
+        "2026-07-28",
+        "2026-07-29",
+        "2026-07-30",
+        "2026-07-31"
+      ],
+      "trading_calendar_source": "TPEx official monthly tradingIndex API",
+      "source_rows_sha256": "7dcb417ca0d578ed8f80b04e9e897363eb64eaa6387c5c53b9815a02b5138d54",
       "sha256": "356ec75ca723f4d48cfbb80be58f6919e6729464745e3f1bacaa37e226ed5fd3"
     },
     "2026-06": {
       "status": "verified",
-      "checked_on": "2026-11-01",
+      "checked_on": "2026-11-02",
       "count": 21,
       "row_count": 21,
       "no_trade_days": [],
+      "no_trade_observations": [],
       "no_price_days": [],
+      "no_price_observations": [],
+      "trading_days": [
+        "2026-06-01",
+        "2026-06-02",
+        "2026-06-03",
+        "2026-06-04",
+        "2026-06-05",
+        "2026-06-08",
+        "2026-06-09",
+        "2026-06-10",
+        "2026-06-11",
+        "2026-06-12",
+        "2026-06-15",
+        "2026-06-16",
+        "2026-06-17",
+        "2026-06-18",
+        "2026-06-22",
+        "2026-06-23",
+        "2026-06-24",
+        "2026-06-25",
+        "2026-06-26",
+        "2026-06-29",
+        "2026-06-30"
+      ],
+      "trading_calendar_source": "TPEx official monthly tradingIndex API",
+      "source_rows_sha256": "0442a9463651b499bc7f51167f9732c3df60562c22ef6bb3e2dff932eaeed069",
       "sha256": "82ea497795eebfdf9f5ba075d72ac63f256fb759cd8ca150867288a01df6325c"
     },
     "2026-05": {
       "status": "verified",
-      "checked_on": "2026-11-01",
+      "checked_on": "2026-11-02",
       "count": 20,
       "row_count": 20,
       "no_trade_days": [],
+      "no_trade_observations": [],
       "no_price_days": [],
+      "no_price_observations": [],
+      "trading_days": [
+        "2026-05-04",
+        "2026-05-05",
+        "2026-05-06",
+        "2026-05-07",
+        "2026-05-08",
+        "2026-05-11",
+        "2026-05-12",
+        "2026-05-13",
+        "2026-05-14",
+        "2026-05-15",
+        "2026-05-18",
+        "2026-05-19",
+        "2026-05-20",
+        "2026-05-21",
+        "2026-05-22",
+        "2026-05-25",
+        "2026-05-26",
+        "2026-05-27",
+        "2026-05-28",
+        "2026-05-29"
+      ],
+      "trading_calendar_source": "TPEx official monthly tradingIndex API",
+      "source_rows_sha256": "9fdec5e61f89766dda8be804f30dd4c09246f765ec3d9b6700b46036171963ca",
       "sha256": "53290288c06cdbdd91def97d8fa925e0eb45f46dc31b32e1f6f2837ea160c41e"
     }
   },
-  "last_attempt": "2026-11-01T07:58:45.207099+08:00",
+  "last_attempt": "2026-11-02T06:43:48.097875+08:00",
   "validation": {
     "issues": [
-      "2026-08:unverified_or_missing",
-      "2026-09:unverified_or_missing",
+      "2026-11:unverified_or_missing",
       "fetch_errors"
     ],
     "complete": false
