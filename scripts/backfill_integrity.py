@@ -12,6 +12,8 @@ import math
 import pathlib
 
 LISTING_SOURCE = "TWSE OpenAPI t187ap03_L"
+TPEX_LISTING_SOURCE = "TPEx official monthly quote first-listing marker"
+TPEX_TRADING_CALENDAR_SOURCE = "TPEx official monthly tradingIndex API"
 
 
 def digest(series):
@@ -23,6 +25,46 @@ def digest(series):
             allow_nan=False,
         ).encode()
     ).hexdigest()
+
+
+def tpex_listing_marker_date(check):
+    marker = check.get("listing_marker")
+    if not isinstance(marker, dict):
+        return None
+    row = marker.get("row")
+    source_hash = marker.get("sha256")
+    if (
+        not isinstance(row, list)
+        or len(row) != 9
+        or not isinstance(source_hash, str)
+        or len(source_hash) != 64
+        or any(char not in "0123456789abcdef" for char in source_hash)
+    ):
+        return None
+    try:
+        if digest(row) != source_hash:
+            return None
+    except (TypeError, ValueError):
+        return None
+    raw_date = row[0]
+    if not isinstance(raw_date, str):
+        return None
+    raw_date = raw_date.strip()
+    if not raw_date.endswith("*") or raw_date.count("*") != 1:
+        return None
+    parts = raw_date.removesuffix("*").split("/")
+    if len(parts) != 3:
+        return None
+    try:
+        year, month, day = map(int, parts)
+        if year < 1911:
+            year += 1911
+        date = dt.date(year, month, day)
+    except ValueError:
+        return None
+    if marker.get("date") != date.isoformat():
+        return None
+    return date
 
 
 def has_reached_first_weekday(month, today):
@@ -48,6 +90,8 @@ def month_not_started(month, today):
 
 def inspect(data, code, months, today, market="TWSE"):
     issues = []
+    if market == "TPEx" and not months:
+        issues.append("no_months_to_validate")
 
     if not isinstance(data, dict):
         return ["invalid_object"]
@@ -80,7 +124,7 @@ def inspect(data, code, months, today, market="TWSE"):
         issues.append("fetch_errors")
 
     series = data.get("series")
-    if not isinstance(series, list) or not series:
+    if not isinstance(series, list) or (not series and market != "TPEx"):
         return sorted(set(issues + ["empty_or_invalid_series"]))
 
     seen = set()
@@ -130,6 +174,8 @@ def inspect(data, code, months, today, market="TWSE"):
             # weekday of the current month.
             if rows:
                 issues.append(f"{key}:unexpected_early_rows")
+            if check.get("status") == "verified":
+                issues.append(f"{key}:verified_before_trading")
             continue
 
         if check.get("status") == "not_listed":
@@ -153,14 +199,37 @@ def inspect(data, code, months, today, market="TWSE"):
                 issues.append(f"{key}:invalid_listing_check_date")
 
             if (
-                check.get("listing_source") != LISTING_SOURCE
+                check.get("listing_source") != (
+                    TPEX_LISTING_SOURCE
+                    if market == "TPEx"
+                    else LISTING_SOURCE
+                )
                 or month_end >= listing_date
                 or rows
                 or "row_count" in check
                 or "no_trade_days" in check
+                or "no_trade_observations" in check
                 or "no_price_days" in check
+                or "no_price_observations" in check
             ):
                 issues.append(f"{key}:invalid_not_listed_evidence")
+            elif market == "TPEx":
+                listing_check = ledger.get(listing_date.isoformat()[:7])
+                if (
+                    not isinstance(listing_check, dict)
+                    or listing_check.get("status") != "verified"
+                    or listing_check.get("listing_date") != listing_value
+                    or listing_check.get("listing_source")
+                    != TPEX_LISTING_SOURCE
+                    or (
+                        tpex_listing_marker_date(listing_check)
+                        != listing_date
+                    )
+                    or listing_value not in seen
+                    or listing_check.get("trading_calendar_source")
+                    != TPEX_TRADING_CALENDAR_SOURCE
+                ):
+                    issues.append(f"{key}:invalid_not_listed_evidence")
             continue
 
         if check.get("status") != "verified":
@@ -171,7 +240,7 @@ def inspect(data, code, months, today, market="TWSE"):
             or check.get("sha256") != digest(rows)
         ):
             issues.append(f"{key}:content_mismatch")
-        elif not rows and "row_count" not in check:
+        elif not rows and "row_count" not in check and market != "TPEx":
             issues.append(f"{key}:unverified_or_missing")
 
         if (
@@ -181,7 +250,153 @@ def inspect(data, code, months, today, market="TWSE"):
         ):
             issues.append(f"{key}:stale")
 
-        if (
+        if market == "TPEx" and check.get("status") == "verified":
+            trading_days = check.get("trading_days")
+            valid_trading_days = []
+            if (
+                check.get("trading_calendar_source")
+                != TPEX_TRADING_CALENDAR_SOURCE
+                or not isinstance(trading_days, list)
+            ):
+                issues.append(f"{key}:invalid_tpex_calendar_evidence")
+            else:
+                for day in trading_days:
+                    try:
+                        date = dt.date.fromisoformat(day)
+                        if (
+                            date.isoformat() != day
+                            or not day.startswith(key)
+                            or date > today
+                            or date.weekday() >= 5
+                            or day in valid_trading_days
+                            or (valid_trading_days and day <= valid_trading_days[-1])
+                        ):
+                            raise ValueError()
+                        valid_trading_days.append(day)
+                    except (TypeError, ValueError):
+                        issues.append(f"{key}:invalid_tpex_calendar_evidence")
+                if not valid_trading_days:
+                    issues.append(f"{key}:invalid_tpex_calendar_evidence")
+            source_hash = check.get("source_rows_sha256")
+            trade_observations = check.get("no_trade_observations")
+            observations = check.get("no_price_observations")
+            if (
+                not isinstance(source_hash, str)
+                or len(source_hash) != 64
+                or any(char not in "0123456789abcdef" for char in source_hash)
+                or not isinstance(trade_observations, list)
+                or not isinstance(observations, list)
+            ):
+                issues.append(f"{key}:invalid_tpex_observation_evidence")
+            else:
+                trade_dates = []
+                for observation in trade_observations:
+                    try:
+                        day = observation["date"]
+                        date = dt.date.fromisoformat(day)
+                        activity = [
+                            observation[field]
+                            for field in ("volume", "amount", "trades")
+                        ]
+                        if (
+                            date.isoformat() != day
+                            or not day.startswith(key)
+                            or date > today
+                            or date.weekday() >= 5
+                            or day in seen
+                            or day in trade_dates
+                            or any(
+                                isinstance(value, bool)
+                                or not isinstance(value, int)
+                                or value != 0
+                                for value in activity
+                            )
+                        ):
+                            raise ValueError()
+                        trade_dates.append(day)
+                    except (KeyError, TypeError, ValueError):
+                        issues.append(f"{key}:invalid_no_trade_observation")
+
+                observation_dates = []
+                for observation in observations:
+                    try:
+                        day = observation["date"]
+                        date = dt.date.fromisoformat(day)
+                        activity = [
+                            observation[field]
+                            for field in ("volume", "amount", "trades")
+                        ]
+                        if (
+                            date.isoformat() != day
+                            or not day.startswith(key)
+                            or date > today
+                            or date.weekday() >= 5
+                            or day in seen
+                            or day in trade_dates
+                            or day in observation_dates
+                            or any(
+                                isinstance(value, bool)
+                                or not isinstance(value, int)
+                                or value < 0
+                                for value in activity
+                            )
+                            or activity[2] == 0
+                            or not any(activity)
+                        ):
+                            raise ValueError()
+                        observation_dates.append(day)
+                    except (KeyError, TypeError, ValueError):
+                        issues.append(f"{key}:invalid_no_price_observation")
+
+                if check.get("no_price_days") != observation_dates:
+                    issues.append(f"{key}:no_price_evidence_mismatch")
+                if check.get("no_trade_days") != trade_dates:
+                    issues.append(f"{key}:no_trade_evidence_mismatch")
+                row_count = check.get("row_count")
+                if (
+                    isinstance(row_count, bool)
+                    or not isinstance(row_count, int)
+                    or row_count <= 0
+                    or row_count
+                    != len(rows) + len(trade_dates) + len(observation_dates)
+                ):
+                    issues.append(f"{key}:row_count_mismatch")
+
+            listing_date = None
+            listing_value = check.get("listing_date")
+            listing_source = check.get("listing_source")
+            listing_marker = check.get("listing_marker")
+            if listing_value is not None or listing_source is not None:
+                try:
+                    listing_date = dt.date.fromisoformat(listing_value)
+                    if (
+                        listing_date.isoformat() != listing_value
+                        or not listing_value.startswith(key)
+                        or listing_value not in seen
+                        or listing_source != TPEX_LISTING_SOURCE
+                        or tpex_listing_marker_date(check) != listing_date
+                    ):
+                        raise ValueError()
+                except (TypeError, ValueError):
+                    issues.append(f"{key}:invalid_listing_marker_evidence")
+                    listing_date = None
+            elif listing_marker is not None:
+                issues.append(f"{key}:invalid_listing_marker_evidence")
+
+            if valid_trading_days:
+                expected_days = {
+                    day for day in valid_trading_days
+                    if listing_date is None or day >= listing_date.isoformat()
+                }
+                observed_days = (
+                    {item["date"] for item in rows}
+                    | set(trade_dates)
+                    | set(observation_dates)
+                )
+                if observed_days != expected_days:
+                    issues.append(f"{key}:trading_day_coverage_mismatch")
+
+        elif (
             "row_count" in check
             or "no_trade_days" in check
             or "no_price_days" in check
