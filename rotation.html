@@ -167,6 +167,73 @@ return data;
 return historicalCache.get(key);
 }
 
+function verifiedStockMonth(data,month){
+const checks=data.month_checks&&typeof data.month_checks==="object"?
+data.month_checks:{};
+const check=checks[month];
+if(!check||check.status!=="verified")return false;
+if(data.market!=="TPEx")return true;
+if(check.trading_calendar_source!=="TPEx official monthly tradingIndex API"||
+!Array.isArray(check.trading_days)||
+!Array.isArray(check.no_trade_days)||
+!Array.isArray(check.no_trade_observations)||
+!Array.isArray(check.no_price_days)||
+!Array.isArray(check.no_price_observations)||
+!/^[a-f0-9]{64}$/.test(check.source_rows_sha256||"")||
+!Array.isArray(data.series))return false;
+const quoteDays=data.series.filter(point=>
+point&&typeof point.date==="string"&&point.date.startsWith(month)
+).map(point=>point.date);
+if(check.count!==quoteDays.length||
+check.no_trade_days.length!==check.no_trade_observations.length||
+check.no_price_days.length!==check.no_price_observations.length||
+!check.no_trade_observations.every((row,index)=>
+row&&row.date===check.no_trade_days[index])||
+!check.no_price_observations.every((row,index)=>
+row&&row.date===check.no_price_days[index]))return false;
+const listed=check.listing_date!==undefined&&check.listing_date!==null;
+if(listed){
+const marker=check.listing_marker;
+const rawDate=Array.isArray(marker?.row)&&marker.row.length===9?
+String(marker.row[0]).trim():"";
+const match=rawDate.match(/^(\d+)\/(\d{1,2})\/(\d{1,2})\*$/);
+if(check.listing_source!=="TPEx official monthly quote first-listing marker"||
+!quoteDays.includes(check.listing_date)||
+!marker||marker.date!==check.listing_date||
+!/^[a-f0-9]{64}$/.test(marker.sha256||"")||!match)return false;
+const year=Number(match[1])+(Number(match[1])<1911?1911:0);
+const markerDate=[year,Number(match[2]),Number(match[3])]
+.map((value,index)=>index?String(value).padStart(2,"0"):String(value))
+.join("-");
+if(markerDate!==check.listing_date)return false;
+}else if(
+(check.listing_source!==undefined&&check.listing_source!==null)||
+(check.listing_marker!==undefined&&check.listing_marker!==null)
+)return false;
+if(!check.trading_days.every(day=>{
+if(typeof day!=="string"||!/^\d{4}-\d{2}-\d{2}$/.test(day)||
+!day.startsWith(month))return false;
+const date=new Date(day+"T00:00:00Z");
+return !Number.isNaN(date.getTime())&&date.toISOString().slice(0,10)===day&&
+date.getUTCDay()!==0&&date.getUTCDay()!==6;
+}))return false;
+const calendarSet=new Set(check.trading_days);
+if(calendarSet.size!==check.trading_days.length||
+check.trading_days.some((day,index)=>
+index>0&&day<=check.trading_days[index-1]))return false;
+const expected=check.trading_days.filter(day=>
+typeof day==="string"&&day.startsWith(month)&&
+(!listed||day>=check.listing_date)
+);
+if(check.row_count!==expected.length)return false;
+const observed=[...quoteDays,...check.no_trade_days,...check.no_price_days];
+const expectedSet=new Set(expected);
+const observedSet=new Set(observed);
+return expectedSet.size===expected.length&&observedSet.size===observed.length&&
+expectedSet.size===observedSet.size&&
+[...expectedSet].every(day=>observedSet.has(day));
+}
+
 function renderReplay(rows,date,theme,market){
 const periods=[1,5,20,60];
 const summary=el("replaySummary");
@@ -232,13 +299,11 @@ for(let offset=0;offset<entries.length;offset+=16){
 const batch=await Promise.all(entries.slice(offset,offset+16).map(async stock=>{
 const data=await loadStockHistory(stock.market,stock.code);
 if(!data){missingFiles++;return null;}
-const checks=data.month_checks&&typeof data.month_checks==="object"?
-data.month_checks:{};
 const series=(Array.isArray(data.series)?data.series:[]).filter(point=>{
 if(!point||typeof point.date!=="string"||
 !Number.isFinite(point.close)||point.close<=0||
 point.date>date)return false;
-return checks[point.date.slice(0,7)]?.status==="verified";
+return verifiedStockMonth(data,point.date.slice(0,7));
 });
 const index=series.findIndex(point=>point.date===date);
 if(index<0)return null;

@@ -23,6 +23,7 @@ from backfill_integrity import (
     month_not_started,
     read,
     TPEX_LISTING_SOURCE,
+    TPEX_TRADING_CALENDAR_SOURCE,
 )
 
 SOURCE = ROOT / "data.json"
@@ -30,6 +31,93 @@ DEST = ROOT / "historical" / "tpex"
 SOURCE_URL = (
     "https://www.tpex.org.tw/www/zh-tw/afterTrading/tradingStock"
 )
+TRADING_INDEX_URL = (
+    "https://www.tpex.org.tw/www/zh-tw/afterTrading/tradingIndex"
+)
+_TRADING_DAYS_CACHE = {}
+
+
+def parse_tpex_date(raw_date):
+    parts = str(raw_date).strip().split("/")
+    if len(parts) != 3:
+        raise ValueError("Invalid TPEx date")
+    year, month, day = map(int, parts)
+    if year < 1911:
+        year += 1911
+    return dt.date(year, month, day)
+
+
+def fetch_trading_days(month):
+    key = month.isoformat()[:7]
+    cached = _TRADING_DAYS_CACHE.get(key)
+    if cached is not None:
+        return list(cached)
+
+    expected_date = month.strftime("%Y%m01")
+    url = f"{TRADING_INDEX_URL}?date={month:%Y/%m}/01"
+    data = fetch(url)
+    if not isinstance(data, dict) or data.get("stat") != "ok":
+        raise ValueError(f"TPEx trading index returned non-OK response: {data}")
+    if data.get("date") != expected_date:
+        raise ValueError("TPEx trading index month mismatch")
+
+    tables = data.get("tables")
+    if not isinstance(tables, list) or not tables:
+        raise ValueError("TPEx trading index has no table")
+    table = tables[0]
+    if (
+        not isinstance(table, dict)
+        or table.get("title") != "日成交量值指數"
+        or table.get("date") != expected_date
+    ):
+        raise ValueError("TPEx trading index table title or month mismatch")
+
+    rows = table.get("data")
+    total_count = table.get("totalCount")
+    if (
+        not isinstance(rows, list)
+        or not rows
+        or isinstance(total_count, bool)
+        or not isinstance(total_count, int)
+        or total_count != len(rows)
+    ):
+        raise ValueError("TPEx trading index row count mismatch")
+
+    today = dt.datetime.now(ZoneInfo("Asia/Taipei")).date()
+    trading_days = []
+    previous_day = ""
+    for row in rows:
+        if not isinstance(row, (list, tuple)) or len(row) != 6:
+            raise ValueError("Invalid TPEx trading index row")
+        try:
+            date = parse_tpex_date(row[0])
+            volume, amount, trades = (
+                parse_integer_field(row[index]) for index in (1, 2, 3)
+            )
+            index_value = float(row[4])
+            change = float(row[5])
+        except (TypeError, ValueError):
+            raise ValueError("Invalid TPEx trading index row") from None
+        day = date.isoformat()
+        if (
+            not day.startswith(key)
+            or date > today
+            or date.weekday() >= 5
+            or day <= previous_day
+            or any(
+                value is None or value < 0
+                for value in (volume, amount, trades)
+            )
+            or not math.isfinite(index_value)
+            or index_value <= 0
+            or not math.isfinite(change)
+        ):
+            raise ValueError("Invalid TPEx trading index date or values")
+        trading_days.append(day)
+        previous_day = day
+
+    _TRADING_DAYS_CACHE[key] = trading_days
+    return list(trading_days)
 
 
 def parse_monthly_observation(row, listing_marker_allowed=False):
@@ -44,14 +132,7 @@ def parse_monthly_observation(row, listing_marker_allowed=False):
             or not listing_marker_allowed
         ):
             return None
-        parts = raw_date.removesuffix("*").split("/")
-        if len(parts) != 3:
-            return None
-
-        year, month, day = map(int, parts)
-        if year < 1911:
-            year += 1911
-        date = dt.date(year, month, day)
+        date = parse_tpex_date(raw_date.removesuffix("*"))
         if date.weekday() >= 5:
             return None
         volume = parse_integer_field(row[1])
@@ -130,9 +211,11 @@ def fetch_month(code, month):
     rows = table.get("data")
     if not isinstance(rows, list) or not rows:
         raise ValueError("Empty TPEx monthly response; requires review")
+    total_count = table.get("totalCount")
     if (
-        "totalCount" in table
-        and table["totalCount"] != len(rows)
+        isinstance(total_count, bool)
+        or not isinstance(total_count, int)
+        or total_count != len(rows)
     ):
         raise ValueError("TPEx monthly row count mismatch")
 
@@ -146,10 +229,12 @@ def fetch_month(code, month):
         )
     )
     result = {}
+    observed_days = []
     no_trade_days = []
     no_trade_observations = []
     no_price_observations = []
     listing_dates = []
+    listing_markers = []
     previous_day = ""
     month_key = month.isoformat()[:7]
     today = dt.datetime.now(ZoneInfo("Asia/Taipei")).date()
@@ -182,19 +267,42 @@ def fetch_month(code, month):
                 "amount": parse_integer_field(row[2]),
                 "trades": parse_integer_field(row[8]),
             })
+        observed_days.append(day)
         if has_listing_marker:
             listing_dates.append(day)
+            listing_markers.append({
+                "date": day,
+                "row": row,
+                "sha256": digest(row),
+            })
         previous_day = day
 
     if len(listing_dates) > 1:
         raise ValueError("Multiple TPEx first-listing markers in one month")
+    listing_date = listing_dates[0] if listing_dates else None
+    trading_days = fetch_trading_days(month)
+    expected_stock_days = [
+        day for day in trading_days
+        if listing_date is None or day >= listing_date
+    ]
+    if set(observed_days) != set(expected_stock_days):
+        missing_days = sorted(set(expected_stock_days) - set(observed_days))
+        unexpected_days = sorted(set(observed_days) - set(expected_stock_days))
+        raise ValueError(
+            "TPEx rows do not cover official trading days "
+            f"(missing={missing_days}, unexpected={unexpected_days})"
+        )
     return {
         "quotes": result,
         "name": str(data.get("name", "")).strip(),
         "no_trade_days": no_trade_days,
         "no_trade_observations": no_trade_observations,
         "no_price_observations": no_price_observations,
-        "listing_date": listing_dates[0] if listing_dates else None,
+        "listing_date": listing_date,
+        "listing_marker": (
+            listing_markers[0] if listing_markers else None
+        ),
+        "trading_days": trading_days,
         "source_rows_sha256": digest(rows),
     }
 
@@ -263,21 +371,7 @@ def update_stock(
         checks = {}
     checks = dict(checks)
 
-    month_keys = {month.isoformat()[:7] for month in stock_months}
-    if not isinstance(previous_errors, list):
-        errors = [{"month": "", "reason": "Invalid prior errors structure"}]
-    else:
-        errors = []
-        for error in previous_errors:
-            error_month = parse_error_month(error)
-            if (
-                error_month is None
-                or error_month.isoformat()[:7] not in month_keys
-            ):
-                errors.append(error)
-
-    official_name = ""
-    listing_date = None
+    prior_listing_month = None
     if isinstance(old, dict) and isinstance(old.get("month_checks"), dict):
         old_series_days = {
             item.get("date")
@@ -299,13 +393,29 @@ def update_stock(
                 if (
                     candidate_date.isoformat().startswith(checked_month)
                     and candidate_date.isoformat() in old_series_days
-                    and month_is_verified(
-                        old, code, candidate_date.replace(day=1), today
-                    )
                 ):
-                    listing_date = candidate_date
+                    prior_listing_month = candidate_date.replace(day=1)
                     break
 
+    months_to_process = set(stock_months)
+    if prior_listing_month is not None:
+        months_to_process.add(prior_listing_month)
+    stock_months = sorted(months_to_process, reverse=True)
+    month_keys = {month.isoformat()[:7] for month in stock_months}
+    if not isinstance(previous_errors, list):
+        errors = [{"month": "", "reason": "Invalid prior errors structure"}]
+    else:
+        errors = []
+        for error in previous_errors:
+            error_month = parse_error_month(error)
+            if (
+                error_month is None
+                or error_month.isoformat()[:7] not in month_keys
+            ):
+                errors.append(error)
+
+    official_name = ""
+    listing_date = None
     for month in stock_months:
         key = month.isoformat()[:7]
         if month_not_started(month, today):
@@ -337,6 +447,7 @@ def update_stock(
         if (
             not refresh_verified
             and month != today.replace(day=1)
+            and month != prior_listing_month
             and month_is_verified(old, code, month, today)
         ):
             print(f"{code} {key}: preserved previously verified quotes")
@@ -372,6 +483,8 @@ def update_stock(
                     for item in result["no_price_observations"]
                 ],
                 "no_price_observations": result["no_price_observations"],
+                "trading_days": result["trading_days"],
+                "trading_calendar_source": TPEX_TRADING_CALENDAR_SOURCE,
                 "source_rows_sha256": result["source_rows_sha256"],
                 "sha256": digest(verified),
             }
@@ -379,6 +492,7 @@ def update_stock(
                 listing_date = dt.date.fromisoformat(result["listing_date"])
                 checks[key]["listing_date"] = result["listing_date"]
                 checks[key]["listing_source"] = TPEX_LISTING_SOURCE
+                checks[key]["listing_marker"] = result["listing_marker"]
             errors = [
                 error for error in errors
                 if parse_error_month(error) != month
