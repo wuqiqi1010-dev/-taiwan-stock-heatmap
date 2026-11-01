@@ -1,0 +1,79 @@
+{
+  "code": "1259",
+  "name": "安心",
+  "market": "TPEx",
+  "source": "TPEx 個股日成交資訊",
+  "source_url": "https://www.tpex.org.tw/www/zh-tw/afterTrading/tradingStock",
+  "price_type": "unadjusted close",
+  "series": [],
+  "errors": [
+    {
+      "month": "2026-10-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    },
+    {
+      "month": "2026-09-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    },
+    {
+      "month": "2026-08-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    },
+    {
+      "month": "2026-07-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    },
+    {
+      "month": "2026-06-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    },
+    {
+      "month": "2026-05-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    }
+  ],
+  "month_checks": {
+    "2026-11": {
+      "status": "not_started",
+      "checked_on": "2026-11-01"
+    },
+    "2026-10": {
+      "status": "error",
+      "checked_on": "2026-11-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    },
+    "2026-09": {
+      "status": "error",
+      "checked_on": "2026-11-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    },
+    "2026-08": {
+      "status": "error",
+      "checked_on": "2026-11-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    },
+    "2026-07": {
+      "status": "error",
+      "checked_on": "2026-11-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    },
+    "2026-06": {
+      "status": "error",
+      "checked_on": "2026-11-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    },
+    "2026-05": {
+      "status": "error",
+      "checked_on": "2026-11-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    }
+  },
+  "last_attempt": "2026-11-01T07:58:49.419707+08:00",
+  "validation": {
+    "issues": [
+      "empty_or_invalid_series",
+      "fetch_errors"
+    ],
+    "complete": false
+  }
+}
