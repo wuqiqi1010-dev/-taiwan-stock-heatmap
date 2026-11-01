@@ -1,0 +1,164 @@
+{
+  "code": "3115",
+  "name": "富榮綱",
+  "market": "TPEx",
+  "source": "TPEx 個股日成交資訊",
+  "source_url": "https://www.tpex.org.tw/www/zh-tw/afterTrading/tradingStock",
+  "price_type": "unadjusted close",
+  "series": [
+    {
+      "date": "2026-05-04",
+      "close": 9.5
+    },
+    {
+      "date": "2026-05-05",
+      "close": 9.76
+    },
+    {
+      "date": "2026-05-06",
+      "close": 9.76
+    },
+    {
+      "date": "2026-05-07",
+      "close": 9.75
+    },
+    {
+      "date": "2026-05-08",
+      "close": 9.66
+    },
+    {
+      "date": "2026-05-11",
+      "close": 9.87
+    },
+    {
+      "date": "2026-05-12",
+      "close": 9.59
+    },
+    {
+      "date": "2026-05-13",
+      "close": 9.59
+    },
+    {
+      "date": "2026-05-14",
+      "close": 9.4
+    },
+    {
+      "date": "2026-05-15",
+      "close": 9.37
+    },
+    {
+      "date": "2026-05-18",
+      "close": 9.37
+    },
+    {
+      "date": "2026-05-19",
+      "close": 9.2
+    },
+    {
+      "date": "2026-05-20",
+      "close": 8.68
+    },
+    {
+      "date": "2026-05-21",
+      "close": 8.63
+    },
+    {
+      "date": "2026-05-22",
+      "close": 8.15
+    },
+    {
+      "date": "2026-05-25",
+      "close": 7.94
+    },
+    {
+      "date": "2026-05-26",
+      "close": 7.92
+    },
+    {
+      "date": "2026-05-27",
+      "close": 7.8
+    },
+    {
+      "date": "2026-05-28",
+      "close": 8.0
+    },
+    {
+      "date": "2026-05-29",
+      "close": 8.29
+    }
+  ],
+  "errors": [
+    {
+      "month": "2026-10-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    },
+    {
+      "month": "2026-09-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    },
+    {
+      "month": "2026-08-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    },
+    {
+      "month": "2026-07-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    },
+    {
+      "month": "2026-06-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    }
+  ],
+  "month_checks": {
+    "2026-11": {
+      "status": "not_started",
+      "checked_on": "2026-11-01"
+    },
+    "2026-10": {
+      "status": "error",
+      "checked_on": "2026-11-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    },
+    "2026-09": {
+      "status": "error",
+      "checked_on": "2026-11-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    },
+    "2026-08": {
+      "status": "error",
+      "checked_on": "2026-11-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    },
+    "2026-07": {
+      "status": "error",
+      "checked_on": "2026-11-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    },
+    "2026-06": {
+      "status": "error",
+      "checked_on": "2026-11-01",
+      "reason": "Unparseable or invalid TPEx quote row"
+    },
+    "2026-05": {
+      "status": "verified",
+      "checked_on": "2026-11-01",
+      "count": 20,
+      "row_count": 20,
+      "no_trade_days": [],
+      "no_price_days": [],
+      "sha256": "811a9e0c2f7c20c79c233258c470fed7b0cf06ed39567fe5d5a1e8bf30e773d3"
+    }
+  },
+  "last_attempt": "2026-11-01T09:19:17.307681+08:00",
+  "validation": {
+    "issues": [
+      "2026-06:unverified_or_missing",
+      "2026-07:unverified_or_missing",
+      "2026-08:unverified_or_missing",
+      "2026-09:unverified_or_missing",
+      "2026-10:unverified_or_missing",
+      "fetch_errors"
+    ],
+    "complete": false
+  }
+}
