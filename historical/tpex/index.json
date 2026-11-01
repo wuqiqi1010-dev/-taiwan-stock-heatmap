@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-11-01T09:19:22.955436+08:00",
+  "generated_at": "2026-11-01T09:59:56.030970+08:00",
   "market": "TPEx",
   "coverage": "TPEx official monthly quotes; rolling 7 months",
   "total_tpex_candidates": 874,
-  "saved_stocks": 80,
-  "complete_stocks": 53,
+  "saved_stocks": 120,
+  "complete_stocks": 39,
   "last_batch": {
-    "offset": 40,
+    "offset": 80,
     "limit": 40,
     "months": 7
   },
@@ -17,8 +17,16 @@
       "name": "茂生農經",
       "complete": false,
       "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
         "2026-08:unverified_or_missing",
         "2026-09:unverified_or_missing",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence",
         "fetch_errors"
       ],
       "sessions": 82,
@@ -30,7 +38,12 @@
       "name": "安心",
       "complete": false,
       "issues": [
-        "empty_or_invalid_series",
+        "2026-05:unverified_or_missing",
+        "2026-06:unverified_or_missing",
+        "2026-07:unverified_or_missing",
+        "2026-08:unverified_or_missing",
+        "2026-09:unverified_or_missing",
+        "2026-10:unverified_or_missing",
         "fetch_errors"
       ],
       "sessions": 0,
@@ -40,8 +53,21 @@
     {
       "code": "1264",
       "name": "德麥",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T07:58:54.083175+08:00"
@@ -49,8 +75,21 @@
     {
       "code": "1268",
       "name": "漢來美食",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T07:58:58.259404+08:00"
@@ -58,8 +97,21 @@
     {
       "code": "1294",
       "name": "漢田生技",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T07:59:04.709472+08:00"
@@ -67,8 +119,21 @@
     {
       "code": "1295",
       "name": "生合",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T07:59:09.730640+08:00"
@@ -76,8 +141,21 @@
     {
       "code": "1336",
       "name": "台翰",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T07:59:14.384459+08:00"
@@ -85,8 +163,21 @@
     {
       "code": "1565",
       "name": "精華",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T07:59:19.656961+08:00"
@@ -94,8 +185,21 @@
     {
       "code": "1569",
       "name": "濱川",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T07:59:24.348209+08:00"
@@ -103,8 +207,21 @@
     {
       "code": "1570",
       "name": "力肯",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T07:59:28.957836+08:00"
@@ -112,8 +229,21 @@
     {
       "code": "1580",
       "name": "新麥",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T07:59:33.651294+08:00"
@@ -121,8 +251,21 @@
     {
       "code": "1584",
       "name": "精剛",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T07:59:37.775289+08:00"
@@ -130,8 +273,21 @@
     {
       "code": "1586",
       "name": "和勤",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T07:59:42.410211+08:00"
@@ -139,8 +295,21 @@
     {
       "code": "1591",
       "name": "駿吉-KY",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 96,
       "errors": 0,
       "last_attempt": "2026-11-01T07:59:48.934103+08:00"
@@ -150,6 +319,16 @@
       "name": "祺驊",
       "complete": false,
       "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
         "2026-10:unverified_or_missing",
         "fetch_errors"
       ],
@@ -160,8 +339,21 @@
     {
       "code": "1595",
       "name": "川寶",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T07:59:58.755128+08:00"
@@ -169,8 +361,21 @@
     {
       "code": "1599",
       "name": "宏佳騰",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T08:00:03.561109+08:00"
@@ -178,8 +383,21 @@
     {
       "code": "1742",
       "name": "台蠟",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T08:00:07.984844+08:00"
@@ -187,8 +405,21 @@
     {
       "code": "1777",
       "name": "生泰",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T08:00:12.297838+08:00"
@@ -200,6 +431,14 @@
       "issues": [
         "2026-05:unverified_or_missing",
         "2026-06:unverified_or_missing",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence",
         "fetch_errors"
       ],
       "sessions": 82,
@@ -211,8 +450,16 @@
       "name": "合世",
       "complete": false,
       "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
         "2026-07:unverified_or_missing",
         "2026-08:unverified_or_missing",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence",
         "fetch_errors"
       ],
       "sessions": 80,
@@ -222,8 +469,21 @@
     {
       "code": "1784",
       "name": "訊聯",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T08:00:26.332386+08:00"
@@ -231,8 +491,21 @@
     {
       "code": "1785",
       "name": "光洋科",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T08:00:30.479235+08:00"
@@ -242,8 +515,16 @@
       "name": "杏昌",
       "complete": false,
       "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
         "2026-06:unverified_or_missing",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
         "2026-08:unverified_or_missing",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence",
         "fetch_errors"
       ],
       "sessions": 81,
@@ -255,8 +536,16 @@
       "name": "金穎生技",
       "complete": false,
       "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
         "2026-07:unverified_or_missing",
         "2026-08:unverified_or_missing",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence",
         "fetch_errors"
       ],
       "sessions": 80,
@@ -266,8 +555,21 @@
     {
       "code": "1799",
       "name": "易威",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T08:00:44.553108+08:00"
@@ -277,7 +579,17 @@
       "name": "寶利徠",
       "complete": false,
       "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
         "2026-08:unverified_or_missing",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence",
         "fetch_errors"
       ],
       "sessions": 102,
@@ -287,8 +599,21 @@
     {
       "code": "1815",
       "name": "富喬",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T08:00:53.951411+08:00"
@@ -296,8 +621,21 @@
     {
       "code": "2061",
       "name": "風青",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T08:00:59.180517+08:00"
@@ -305,8 +643,21 @@
     {
       "code": "2063",
       "name": "世鎧",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T08:01:03.887180+08:00"
@@ -316,7 +667,11 @@
       "name": "晉椿",
       "complete": false,
       "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
         "2026-06:unverified_or_missing",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
         "2026-08:unverified_or_missing",
         "2026-09:unverified_or_missing",
         "2026-10:unverified_or_missing",
@@ -329,8 +684,21 @@
     {
       "code": "2065",
       "name": "世豐",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T08:01:13.244130+08:00"
@@ -338,8 +706,21 @@
     {
       "code": "2066",
       "name": "世德",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T08:01:18.907937+08:00"
@@ -347,8 +728,21 @@
     {
       "code": "2067",
       "name": "嘉鋼",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 116,
       "errors": 0,
       "last_attempt": "2026-11-01T08:01:22.999988+08:00"
@@ -356,8 +750,21 @@
     {
       "code": "2070",
       "name": "精湛",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T08:01:28.094236+08:00"
@@ -367,7 +774,12 @@
       "name": "雄順",
       "complete": false,
       "issues": [
-        "empty_or_invalid_series",
+        "2026-05:unverified_or_missing",
+        "2026-06:unverified_or_missing",
+        "2026-07:unverified_or_missing",
+        "2026-08:unverified_or_missing",
+        "2026-09:unverified_or_missing",
+        "2026-10:unverified_or_missing",
         "fetch_errors"
       ],
       "sessions": 0,
@@ -377,8 +789,21 @@
     {
       "code": "2221",
       "name": "大甲",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T08:01:36.296525+08:00"
@@ -386,8 +811,21 @@
     {
       "code": "2230",
       "name": "泰茂",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T08:01:41.658499+08:00"
@@ -397,7 +835,12 @@
       "name": "謚源",
       "complete": false,
       "issues": [
-        "empty_or_invalid_series",
+        "2026-05:unverified_or_missing",
+        "2026-06:unverified_or_missing",
+        "2026-07:unverified_or_missing",
+        "2026-08:unverified_or_missing",
+        "2026-09:unverified_or_missing",
+        "2026-10:unverified_or_missing",
         "fetch_errors"
       ],
       "sessions": 0,
@@ -409,7 +852,12 @@
       "name": "湧盛",
       "complete": false,
       "issues": [
-        "empty_or_invalid_series",
+        "2026-05:unverified_or_missing",
+        "2026-06:unverified_or_missing",
+        "2026-07:unverified_or_missing",
+        "2026-08:unverified_or_missing",
+        "2026-09:unverified_or_missing",
+        "2026-10:unverified_or_missing",
         "fetch_errors"
       ],
       "sessions": 0,
@@ -421,7 +869,17 @@
       "name": "綠意",
       "complete": false,
       "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
         "2026-07:unverified_or_missing",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence",
         "fetch_errors"
       ],
       "sessions": 101,
@@ -431,8 +889,21 @@
     {
       "code": "2640",
       "name": "大車隊",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:16:21.020204+08:00"
@@ -440,8 +911,21 @@
     {
       "code": "2641",
       "name": "正德",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:16:25.570045+08:00"
@@ -449,8 +933,21 @@
     {
       "code": "2643",
       "name": "捷迅",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:16:30.483143+08:00"
@@ -460,6 +957,16 @@
       "name": "全心投控",
       "complete": false,
       "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
         "2026-10:unverified_or_missing",
         "fetch_errors"
       ],
@@ -472,7 +979,12 @@
       "name": "藝舍-KY",
       "complete": false,
       "issues": [
-        "empty_or_invalid_series",
+        "2026-05:unverified_or_missing",
+        "2026-06:unverified_or_missing",
+        "2026-07:unverified_or_missing",
+        "2026-08:unverified_or_missing",
+        "2026-09:unverified_or_missing",
+        "2026-10:unverified_or_missing",
         "fetch_errors"
       ],
       "sessions": 0,
@@ -482,8 +994,21 @@
     {
       "code": "2726",
       "name": "雅茗-KY",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:16:48.569361+08:00"
@@ -491,8 +1016,21 @@
     {
       "code": "2729",
       "name": "瓦城",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:16:53.531986+08:00"
@@ -500,8 +1038,21 @@
     {
       "code": "2732",
       "name": "六角",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:16:58.471456+08:00"
@@ -509,8 +1060,21 @@
     {
       "code": "2734",
       "name": "易飛網",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:17:02.762924+08:00"
@@ -518,8 +1082,21 @@
     {
       "code": "2736",
       "name": "富野",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:17:07.625368+08:00"
@@ -527,8 +1104,21 @@
     {
       "code": "2740",
       "name": "華軒",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:17:13.027124+08:00"
@@ -536,8 +1126,21 @@
     {
       "code": "2743",
       "name": "山富",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:17:17.947260+08:00"
@@ -545,8 +1148,21 @@
     {
       "code": "2745",
       "name": "五福",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:17:22.149801+08:00"
@@ -556,6 +1172,12 @@
       "name": "王座",
       "complete": false,
       "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
         "2026-08:unverified_or_missing",
         "2026-09:unverified_or_missing",
         "2026-10:unverified_or_missing",
@@ -570,9 +1192,15 @@
       "name": "豆府",
       "complete": false,
       "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
         "2026-07:unverified_or_missing",
         "2026-08:unverified_or_missing",
         "2026-09:unverified_or_missing",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence",
         "fetch_errors"
       ],
       "sessions": 60,
@@ -582,8 +1210,21 @@
     {
       "code": "2754",
       "name": "亞洲藏壽司",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:17:34.991848+08:00"
@@ -591,8 +1232,21 @@
     {
       "code": "2755",
       "name": "揚秦",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:17:39.853425+08:00"
@@ -602,7 +1256,17 @@
       "name": "聯發國際",
       "complete": false,
       "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
         "2026-07:unverified_or_missing",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence",
         "fetch_errors"
       ],
       "sessions": 101,
@@ -612,8 +1276,21 @@
     {
       "code": "2916",
       "name": "滿心",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:17:49.004359+08:00"
@@ -627,6 +1304,10 @@
         "2026-06:unverified_or_missing",
         "2026-07:unverified_or_missing",
         "2026-08:unverified_or_missing",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence",
         "fetch_errors"
       ],
       "sessions": 39,
@@ -638,6 +1319,14 @@
       "name": "誠品生活",
       "complete": false,
       "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
         "2026-09:unverified_or_missing",
         "2026-10:unverified_or_missing",
         "fetch_errors"
@@ -656,6 +1345,8 @@
         "2026-07:unverified_or_missing",
         "2026-08:unverified_or_missing",
         "2026-09:unverified_or_missing",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence",
         "fetch_errors"
       ],
       "sessions": 19,
@@ -668,6 +1359,10 @@
       "complete": false,
       "issues": [
         "2026-05:unverified_or_missing",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
         "2026-08:unverified_or_missing",
         "2026-09:unverified_or_missing",
         "2026-10:unverified_or_missing",
@@ -683,6 +1378,8 @@
       "complete": false,
       "issues": [
         "2026-05:unverified_or_missing",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
         "2026-07:unverified_or_missing",
         "2026-08:unverified_or_missing",
         "2026-09:unverified_or_missing",
@@ -696,8 +1393,21 @@
     {
       "code": "3066",
       "name": "李洲",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:18:16.848654+08:00"
@@ -707,7 +1417,12 @@
       "name": "全域",
       "complete": false,
       "issues": [
-        "empty_or_invalid_series",
+        "2026-05:unverified_or_missing",
+        "2026-06:unverified_or_missing",
+        "2026-07:unverified_or_missing",
+        "2026-08:unverified_or_missing",
+        "2026-09:unverified_or_missing",
+        "2026-10:unverified_or_missing",
         "fetch_errors"
       ],
       "sessions": 0,
@@ -717,8 +1432,21 @@
     {
       "code": "3071",
       "name": "協禧",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:18:26.155606+08:00"
@@ -726,8 +1454,21 @@
     {
       "code": "3073",
       "name": "天方能源",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:18:30.470866+08:00"
@@ -735,8 +1476,21 @@
     {
       "code": "3078",
       "name": "僑威",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:18:34.758492+08:00"
@@ -744,8 +1498,21 @@
     {
       "code": "3081",
       "name": "聯亞",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:18:39.078855+08:00"
@@ -753,8 +1520,21 @@
     {
       "code": "3083",
       "name": "網龍",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:18:43.329398+08:00"
@@ -762,8 +1542,21 @@
     {
       "code": "3086",
       "name": "華義*",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:18:47.635583+08:00"
@@ -771,8 +1564,21 @@
     {
       "code": "3088",
       "name": "艾訊",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:18:53.519600+08:00"
@@ -780,8 +1586,21 @@
     {
       "code": "3093",
       "name": "港建*",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:18:58.961339+08:00"
@@ -791,8 +1610,16 @@
       "name": "及成",
       "complete": false,
       "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
         "2026-08:unverified_or_missing",
         "2026-09:unverified_or_missing",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence",
         "fetch_errors"
       ],
       "sessions": 82,
@@ -802,8 +1629,21 @@
     {
       "code": "3105",
       "name": "穩懋",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:19:07.435248+08:00"
@@ -811,8 +1651,21 @@
     {
       "code": "3114",
       "name": "好德",
-      "complete": true,
-      "issues": [],
+      "complete": false,
+      "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
+        "2026-07:invalid_tpex_calendar_evidence",
+        "2026-07:invalid_tpex_observation_evidence",
+        "2026-08:invalid_tpex_calendar_evidence",
+        "2026-08:invalid_tpex_observation_evidence",
+        "2026-09:invalid_tpex_calendar_evidence",
+        "2026-09:invalid_tpex_observation_evidence",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence"
+      ],
       "sessions": 123,
       "errors": 0,
       "last_attempt": "2026-11-01T09:19:12.353629+08:00"
@@ -822,6 +1675,8 @@
       "name": "富榮綱",
       "complete": false,
       "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
         "2026-06:unverified_or_missing",
         "2026-07:unverified_or_missing",
         "2026-08:unverified_or_missing",
@@ -838,9 +1693,15 @@
       "name": "進階",
       "complete": false,
       "issues": [
+        "2026-05:invalid_tpex_calendar_evidence",
+        "2026-05:invalid_tpex_observation_evidence",
+        "2026-06:invalid_tpex_calendar_evidence",
+        "2026-06:invalid_tpex_observation_evidence",
         "2026-07:unverified_or_missing",
         "2026-08:unverified_or_missing",
         "2026-09:unverified_or_missing",
+        "2026-10:invalid_tpex_calendar_evidence",
+        "2026-10:invalid_tpex_observation_evidence",
         "fetch_errors"
       ],
       "sessions": 60,
@@ -850,442 +1711,365 @@
     {
       "code": "3122",
       "name": "笙泉",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:56:12.887389+08:00"
     },
     {
       "code": "3128",
       "name": "昇銳",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:56:17.528305+08:00"
     },
     {
       "code": "3131",
       "name": "弘塑",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:56:22.470862+08:00"
     },
     {
       "code": "3141",
       "name": "晶宏",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:56:27.327711+08:00"
     },
     {
       "code": "3147",
       "name": "大綜",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:56:31.967692+08:00"
     },
     {
       "code": "3152",
       "name": "璟德",
       "complete": false,
       "issues": [
-        "invalid_object"
+        "2026-06:unverified_or_missing",
+        "fetch_errors"
       ],
-      "sessions": 0,
-      "errors": 0,
-      "last_attempt": null
+      "sessions": 102,
+      "errors": 1,
+      "last_attempt": "2026-11-01T09:56:40.760139+08:00"
     },
     {
       "code": "3158",
       "name": "嘉實",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 118,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:56:46.360601+08:00"
     },
     {
       "code": "3162",
       "name": "精確",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:56:51.075976+08:00"
     },
     {
       "code": "3163",
       "name": "波若威",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:56:55.394895+08:00"
     },
     {
       "code": "3169",
       "name": "亞信",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:56:59.894842+08:00"
     },
     {
       "code": "3171",
       "name": "炎洲流通",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 120,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:57:04.197568+08:00"
     },
     {
       "code": "3176",
       "name": "基亞",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:57:10.992740+08:00"
     },
     {
       "code": "3178",
       "name": "公準",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:57:16.797031+08:00"
     },
     {
       "code": "3188",
       "name": "鑫龍騰",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:57:21.700375+08:00"
     },
     {
       "code": "3191",
       "name": "雲嘉南",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 122,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:57:27.128300+08:00"
     },
     {
       "code": "3205",
       "name": "佰研",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:57:34.562138+08:00"
     },
     {
       "code": "3206",
       "name": "志豐",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:57:42.274207+08:00"
     },
     {
       "code": "3207",
       "name": "耀勝",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:57:47.111870+08:00"
     },
     {
       "code": "3211",
       "name": "順達",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:57:52.211123+08:00"
     },
     {
       "code": "3213",
       "name": "茂訊",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:58:03.265981+08:00"
     },
     {
       "code": "3217",
       "name": "優群",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:58:10.391930+08:00"
     },
     {
       "code": "3218",
       "name": "大學光",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:58:20.289610+08:00"
     },
     {
       "code": "3219",
       "name": "倚強科",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:58:25.855022+08:00"
     },
     {
       "code": "3221",
       "name": "台嘉碩",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:58:31.229863+08:00"
     },
     {
       "code": "3224",
       "name": "三顧",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:58:36.933640+08:00"
     },
     {
       "code": "3226",
       "name": "龍鋒",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 107,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:58:44.766391+08:00"
     },
     {
       "code": "3227",
       "name": "原相",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:58:49.317531+08:00"
     },
     {
       "code": "3228",
       "name": "金麗科",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:58:53.997834+08:00"
     },
     {
       "code": "3230",
       "name": "錦明",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:58:58.450659+08:00"
     },
     {
       "code": "3232",
       "name": "昱捷",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:59:03.174205+08:00"
     },
     {
       "code": "3234",
       "name": "光環",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:59:07.544243+08:00"
     },
     {
       "code": "3236",
       "name": "千如",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:59:12.471398+08:00"
     },
     {
       "code": "3252",
       "name": "海灣",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 122,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:59:17.673247+08:00"
     },
     {
       "code": "3260",
       "name": "威剛",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:59:22.963929+08:00"
     },
     {
       "code": "3264",
       "name": "欣銓",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:59:28.453163+08:00"
     },
     {
       "code": "3265",
       "name": "台星科",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:59:32.994467+08:00"
     },
     {
       "code": "3268",
       "name": "海德威",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:59:39.711685+08:00"
     },
     {
       "code": "3272",
       "name": "東碩",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:59:44.392989+08:00"
     },
     {
       "code": "3276",
       "name": "宇環",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:59:49.429674+08:00"
     },
     {
       "code": "3284",
       "name": "太普高",
-      "complete": false,
-      "issues": [
-        "invalid_object"
-      ],
-      "sessions": 0,
+      "complete": true,
+      "issues": [],
+      "sessions": 123,
       "errors": 0,
-      "last_attempt": null
+      "last_attempt": "2026-11-01T09:59:55.983474+08:00"
     },
     {
       "code": "3285",
