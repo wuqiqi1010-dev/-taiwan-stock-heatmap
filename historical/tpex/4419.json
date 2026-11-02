@@ -487,11 +487,17 @@
       "close": 47.95
     }
   ],
-  "errors": [],
+  "errors": [
+    {
+      "month": "2026-11-01",
+      "reason": "Empty TPEx monthly response; requires review"
+    }
+  ],
   "month_checks": {
     "2026-11": {
-      "status": "not_started",
-      "checked_on": "2026-11-01"
+      "status": "error",
+      "checked_on": "2026-11-02",
+      "reason": "Empty TPEx monthly response; requires review"
     },
     "2026-10": {
       "status": "verified",
@@ -734,9 +740,12 @@
       "sha256": "b7470c056e473951d095228b1595788af50d937c543a0b88ca671586405e622e"
     }
   },
-  "last_attempt": "2026-11-01T15:10:06.379896+08:00",
+  "last_attempt": "2026-11-02T14:12:23.411912+08:00",
   "validation": {
-    "issues": [],
-    "complete": true
+    "issues": [
+      "2026-11:unverified_or_missing",
+      "fetch_errors"
+    ],
+    "complete": false
   }
 }
