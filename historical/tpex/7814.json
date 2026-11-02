@@ -293,19 +293,29 @@
     {
       "date": "2026-10-30",
       "close": 28.0
-    }
-  ],
-  "errors": [
+    },
     {
-      "month": "2026-11-01",
-      "reason": "Empty TPEx monthly response; requires review"
+      "date": "2026-11-02",
+      "close": 28.0
     }
   ],
+  "errors": [],
   "month_checks": {
     "2026-11": {
-      "status": "error",
-      "checked_on": "2026-11-02",
-      "reason": "Empty TPEx monthly response; requires review"
+      "status": "verified",
+      "checked_on": "2026-11-03",
+      "count": 1,
+      "row_count": 1,
+      "no_trade_days": [],
+      "no_trade_observations": [],
+      "no_price_days": [],
+      "no_price_observations": [],
+      "trading_days": [
+        "2026-11-02"
+      ],
+      "trading_calendar_source": "TPEx official monthly tradingIndex API",
+      "source_rows_sha256": "60f2a6e7254188e546f2d9b8237077739c40001fa7aa55af31bc7a3dbb45eafa",
+      "sha256": "2cbbc32e947ce4ec5e152282cd752e9c5e75fdb9d118cc74eab58b7dd5e36a03"
     },
     "2026-10": {
       "status": "verified",
@@ -414,7 +424,7 @@
     },
     "2026-07": {
       "status": "verified",
-      "checked_on": "2026-11-02",
+      "checked_on": "2026-11-03",
       "count": 12,
       "row_count": 12,
       "no_trade_days": [],
@@ -468,23 +478,20 @@
     },
     "2026-06": {
       "status": "not_listed",
-      "checked_on": "2026-11-02",
+      "checked_on": "2026-11-03",
       "listing_date": "2026-07-16",
       "listing_source": "TPEx official monthly quote first-listing marker"
     },
     "2026-05": {
       "status": "not_listed",
-      "checked_on": "2026-11-02",
+      "checked_on": "2026-11-03",
       "listing_date": "2026-07-16",
       "listing_source": "TPEx official monthly quote first-listing marker"
     }
   },
-  "last_attempt": "2026-11-02T02:55:07.422504+08:00",
+  "last_attempt": "2026-11-03T04:53:00.008347+08:00",
   "validation": {
-    "issues": [
-      "2026-11:unverified_or_missing",
-      "fetch_errors"
-    ],
-    "complete": false
+    "issues": [],
+    "complete": true
   }
 }

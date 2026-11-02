@@ -101,19 +101,29 @@
     {
       "date": "2026-10-30",
       "close": 3245.0
-    }
-  ],
-  "errors": [
+    },
     {
-      "month": "2026-11-01",
-      "reason": "Empty TPEx monthly response; requires review"
+      "date": "2026-11-02",
+      "close": 3240.0
     }
   ],
+  "errors": [],
   "month_checks": {
     "2026-11": {
-      "status": "error",
-      "checked_on": "2026-11-02",
-      "reason": "Empty TPEx monthly response; requires review"
+      "status": "verified",
+      "checked_on": "2026-11-03",
+      "count": 1,
+      "row_count": 1,
+      "no_trade_days": [],
+      "no_trade_observations": [],
+      "no_price_days": [],
+      "no_price_observations": [],
+      "trading_days": [
+        "2026-11-02"
+      ],
+      "trading_calendar_source": "TPEx official monthly tradingIndex API",
+      "source_rows_sha256": "d146f14b558cef2bad8162eee6832c16ff74256029615e9ff549cb4d24e37be9",
+      "sha256": "9b0907f65dd422a570216aaf9969af0317533fd1e15756794e863c2052a5b6ad"
     },
     "2026-10": {
       "status": "verified",
@@ -151,7 +161,7 @@
     },
     "2026-09": {
       "status": "verified",
-      "checked_on": "2026-11-02",
+      "checked_on": "2026-11-03",
       "count": 5,
       "row_count": 5,
       "no_trade_days": [],
@@ -203,35 +213,32 @@
     },
     "2026-08": {
       "status": "not_listed",
-      "checked_on": "2026-11-02",
+      "checked_on": "2026-11-03",
       "listing_date": "2026-09-22",
       "listing_source": "TPEx official monthly quote first-listing marker"
     },
     "2026-07": {
       "status": "not_listed",
-      "checked_on": "2026-11-02",
+      "checked_on": "2026-11-03",
       "listing_date": "2026-09-22",
       "listing_source": "TPEx official monthly quote first-listing marker"
     },
     "2026-06": {
       "status": "not_listed",
-      "checked_on": "2026-11-02",
+      "checked_on": "2026-11-03",
       "listing_date": "2026-09-22",
       "listing_source": "TPEx official monthly quote first-listing marker"
     },
     "2026-05": {
       "status": "not_listed",
-      "checked_on": "2026-11-02",
+      "checked_on": "2026-11-03",
       "listing_date": "2026-09-22",
       "listing_source": "TPEx official monthly quote first-listing marker"
     }
   },
-  "last_attempt": "2026-11-02T03:46:24.103741+08:00",
+  "last_attempt": "2026-11-03T04:53:14.614972+08:00",
   "validation": {
-    "issues": [
-      "2026-11:unverified_or_missing",
-      "fetch_errors"
-    ],
-    "complete": false
+    "issues": [],
+    "complete": true
   }
 }
