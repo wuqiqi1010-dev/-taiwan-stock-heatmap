@@ -155,11 +155,17 @@
       "close": 52.9
     }
   ],
-  "errors": [],
+  "errors": [
+    {
+      "month": "2026-11-01",
+      "reason": "Empty TPEx monthly response; requires review"
+    }
+  ],
   "month_checks": {
     "2026-11": {
-      "status": "not_started",
-      "checked_on": "2026-11-01"
+      "status": "error",
+      "checked_on": "2026-11-02",
+      "reason": "Empty TPEx monthly response; requires review"
     },
     "2026-10": {
       "status": "verified",
@@ -197,7 +203,7 @@
     },
     "2026-09": {
       "status": "verified",
-      "checked_on": "2026-11-01",
+      "checked_on": "2026-11-02",
       "count": 18,
       "row_count": 18,
       "no_trade_days": [],
@@ -249,32 +255,35 @@
     },
     "2026-08": {
       "status": "not_listed",
-      "checked_on": "2026-11-01",
+      "checked_on": "2026-11-02",
       "listing_date": "2026-09-03",
       "listing_source": "TPEx official monthly quote first-listing marker"
     },
     "2026-07": {
       "status": "not_listed",
-      "checked_on": "2026-11-01",
+      "checked_on": "2026-11-02",
       "listing_date": "2026-09-03",
       "listing_source": "TPEx official monthly quote first-listing marker"
     },
     "2026-06": {
       "status": "not_listed",
-      "checked_on": "2026-11-01",
+      "checked_on": "2026-11-02",
       "listing_date": "2026-09-03",
       "listing_source": "TPEx official monthly quote first-listing marker"
     },
     "2026-05": {
       "status": "not_listed",
-      "checked_on": "2026-11-01",
+      "checked_on": "2026-11-02",
       "listing_date": "2026-09-03",
       "listing_source": "TPEx official monthly quote first-listing marker"
     }
   },
-  "last_attempt": "2026-11-01T13:55:42.070903+08:00",
+  "last_attempt": "2026-11-02T13:09:38.730649+08:00",
   "validation": {
-    "issues": [],
-    "complete": true
+    "issues": [
+      "2026-11:unverified_or_missing",
+      "fetch_errors"
+    ],
+    "complete": false
   }
 }

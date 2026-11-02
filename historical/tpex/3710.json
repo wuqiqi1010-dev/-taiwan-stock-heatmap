@@ -421,14 +421,19 @@
   ],
   "errors": [
     {
+      "month": "2026-11-01",
+      "reason": "Empty TPEx monthly response; requires review"
+    },
+    {
       "month": "2026-09-01",
       "reason": "TPEx rows do not cover official trading days (missing=['2026-09-10', '2026-09-11', '2026-09-14', '2026-09-15', '2026-09-16', '2026-09-17', '2026-09-18'], unexpected=[])"
     }
   ],
   "month_checks": {
     "2026-11": {
-      "status": "not_started",
-      "checked_on": "2026-11-01"
+      "status": "error",
+      "checked_on": "2026-11-02",
+      "reason": "Empty TPEx monthly response; requires review"
     },
     "2026-10": {
       "status": "verified",
@@ -466,7 +471,7 @@
     },
     "2026-09": {
       "status": "error",
-      "checked_on": "2026-11-01",
+      "checked_on": "2026-11-02",
       "reason": "TPEx rows do not cover official trading days (missing=['2026-09-10', '2026-09-11', '2026-09-14', '2026-09-15', '2026-09-16', '2026-09-17', '2026-09-18'], unexpected=[])"
     },
     "2026-08": {
@@ -614,10 +619,11 @@
       "sha256": "3bab0f68f11067631b42440d121e444344f698144e3c8dbd52de45f350f30c31"
     }
   },
-  "last_attempt": "2026-11-01T13:55:35.534521+08:00",
+  "last_attempt": "2026-11-02T13:09:35.796793+08:00",
   "validation": {
     "issues": [
       "2026-09:unverified_or_missing",
+      "2026-11:unverified_or_missing",
       "fetch_errors"
     ],
     "complete": false
