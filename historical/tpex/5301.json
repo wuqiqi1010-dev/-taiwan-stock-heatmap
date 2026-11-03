@@ -333,6 +333,10 @@
     {
       "date": "2026-11-02",
       "close": 8.12
+    },
+    {
+      "date": "2026-11-03",
+      "close": 7.47
     }
   ],
   "errors": [
@@ -348,28 +352,29 @@
   "month_checks": {
     "2026-11": {
       "status": "verified",
-      "checked_on": "2026-11-02",
-      "count": 1,
-      "row_count": 1,
+      "checked_on": "2026-11-03",
+      "count": 2,
+      "row_count": 2,
       "no_trade_days": [],
       "no_trade_observations": [],
       "no_price_days": [],
       "no_price_observations": [],
       "trading_days": [
-        "2026-11-02"
+        "2026-11-02",
+        "2026-11-03"
       ],
       "trading_calendar_source": "TPEx official monthly tradingIndex API",
-      "source_rows_sha256": "849abd7d3940c993a57e045dd1cd90742290b811c9be025c8edad52be5a28201",
-      "sha256": "04549130adc4ead5ab4570c1f054c81bf6da8ccc59a7686c90ae4cf121a77318"
+      "source_rows_sha256": "d59a819b4a41a7df78daa11d697e1bafbb9024ebf578ac525418cbee5f86466e",
+      "sha256": "13e7f425d637d504370f5a641905d5db9fcddbb2ff596417e7fdce9896001c76"
     },
     "2026-10": {
       "status": "error",
-      "checked_on": "2026-11-02",
+      "checked_on": "2026-11-03",
       "reason": "TPEx rows do not cover official trading days (missing=['2026-10-01', '2026-10-02', '2026-10-05', '2026-10-06'], unexpected=[])"
     },
     "2026-09": {
       "status": "error",
-      "checked_on": "2026-11-02",
+      "checked_on": "2026-11-03",
       "reason": "TPEx rows do not cover official trading days (missing=['2026-09-30'], unexpected=[])"
     },
     "2026-08": {
@@ -542,7 +547,7 @@
       "sha256": "b7e84d6ceb013f4f4312bec80ad81eef2585c034666d186750553494c751ce90"
     }
   },
-  "last_attempt": "2026-11-02T18:21:36.623853+08:00",
+  "last_attempt": "2026-11-03T19:55:51.656841+08:00",
   "validation": {
     "issues": [
       "2026-09:unverified_or_missing",
