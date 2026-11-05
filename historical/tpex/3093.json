@@ -505,26 +505,31 @@
     {
       "date": "2026-11-03",
       "close": 35.75
+    },
+    {
+      "date": "2026-11-04",
+      "close": 36.45
     }
   ],
   "errors": [],
   "month_checks": {
     "2026-11": {
       "status": "verified",
-      "checked_on": "2026-11-04",
-      "count": 2,
-      "row_count": 2,
+      "checked_on": "2026-11-05",
+      "count": 3,
+      "row_count": 3,
       "no_trade_days": [],
       "no_trade_observations": [],
       "no_price_days": [],
       "no_price_observations": [],
       "trading_days": [
         "2026-11-02",
-        "2026-11-03"
+        "2026-11-03",
+        "2026-11-04"
       ],
       "trading_calendar_source": "TPEx official monthly tradingIndex API",
-      "source_rows_sha256": "f85700c3a704cce86cd231b3be6d43519ccfa67554600faed6523c819b7710e0",
-      "sha256": "dc177dd3a9d440e7dd24810838407c7a77bf57f04d14e63826cc862ff1860dea"
+      "source_rows_sha256": "4c0762391b95fc63c1887f7a57006a571e63e506871a3298872fe3424a29c1fc",
+      "sha256": "ebe72b0dc2d56bd5b98778fa74d5a44e5b27cbfeb5351a60880c7b165728206e"
     },
     "2026-10": {
       "status": "verified",
@@ -740,7 +745,7 @@
       "sha256": "df157c0aedf1ad2cdd3611c4f41bf93fb75a2bccdfc5ebc2262a27a86a58f4e7"
     }
   },
-  "last_attempt": "2026-11-04T10:11:35.433146+08:00",
+  "last_attempt": "2026-11-05T12:02:53.253937+08:00",
   "validation": {
     "issues": [],
     "complete": true
