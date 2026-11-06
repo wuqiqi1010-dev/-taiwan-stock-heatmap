@@ -305,15 +305,19 @@
     {
       "date": "2026-11-04",
       "close": 27.25
+    },
+    {
+      "date": "2026-11-05",
+      "close": 28.0
     }
   ],
   "errors": [],
   "month_checks": {
     "2026-11": {
       "status": "verified",
-      "checked_on": "2026-11-05",
-      "count": 3,
-      "row_count": 3,
+      "checked_on": "2026-11-06",
+      "count": 4,
+      "row_count": 4,
       "no_trade_days": [],
       "no_trade_observations": [],
       "no_price_days": [],
@@ -321,11 +325,12 @@
       "trading_days": [
         "2026-11-02",
         "2026-11-03",
-        "2026-11-04"
+        "2026-11-04",
+        "2026-11-05"
       ],
       "trading_calendar_source": "TPEx official monthly tradingIndex API",
-      "source_rows_sha256": "7333b62023865da7e9dc15e0bc01d692dd0efcd9eb7e6aacc2e3de4891599d20",
-      "sha256": "e0333d97c0a1c610af88820df20d7f924af264b43767b3e6fe6b703a39c1c684"
+      "source_rows_sha256": "15861075e56f26db45b71138f7bf76f1f903636ea167e7724a554137b2e9c6e4",
+      "sha256": "e97bb16721bc7024450f5ebb020787d7989660619719ec0220b5242fdcb0fe7c"
     },
     "2026-10": {
       "status": "verified",
@@ -434,7 +439,7 @@
     },
     "2026-07": {
       "status": "verified",
-      "checked_on": "2026-11-05",
+      "checked_on": "2026-11-06",
       "count": 12,
       "row_count": 12,
       "no_trade_days": [],
@@ -488,18 +493,18 @@
     },
     "2026-06": {
       "status": "not_listed",
-      "checked_on": "2026-11-05",
+      "checked_on": "2026-11-06",
       "listing_date": "2026-07-16",
       "listing_source": "TPEx official monthly quote first-listing marker"
     },
     "2026-05": {
       "status": "not_listed",
-      "checked_on": "2026-11-05",
+      "checked_on": "2026-11-06",
       "listing_date": "2026-07-16",
       "listing_source": "TPEx official monthly quote first-listing marker"
     }
   },
-  "last_attempt": "2026-11-05T05:55:45.120583+08:00",
+  "last_attempt": "2026-11-06T09:19:02.543665+08:00",
   "validation": {
     "issues": [],
     "complete": true
