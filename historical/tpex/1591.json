@@ -405,6 +405,10 @@
     {
       "date": "2026-11-05",
       "close": 30.65
+    },
+    {
+      "date": "2026-11-06",
+      "close": 29.5
     }
   ],
   "errors": [
@@ -420,9 +424,9 @@
   "month_checks": {
     "2026-11": {
       "status": "verified",
-      "checked_on": "2026-11-06",
-      "count": 4,
-      "row_count": 4,
+      "checked_on": "2026-11-07",
+      "count": 5,
+      "row_count": 5,
       "no_trade_days": [],
       "no_trade_observations": [],
       "no_price_days": [],
@@ -431,11 +435,12 @@
         "2026-11-02",
         "2026-11-03",
         "2026-11-04",
-        "2026-11-05"
+        "2026-11-05",
+        "2026-11-06"
       ],
       "trading_calendar_source": "TPEx official monthly tradingIndex API",
-      "source_rows_sha256": "857ae906059cd1a04f9f4a216e9b752e9593efba6e7eef6f27dda26396fe0c6a",
-      "sha256": "39eaa67a736c79f365b5da870f7de3f7e1eefb1f2b531ae31c1478d5ae87a9b0"
+      "source_rows_sha256": "922cb29a08503ac6feb6390919294259de49dac44bb9229c5534d3ab3dbbb820",
+      "sha256": "c65cf511885e68ee2a1052430bc8e53bf59da30635782c67a55fab1fd7136992"
     },
     "2026-10": {
       "status": "verified",
@@ -544,12 +549,12 @@
     },
     "2026-07": {
       "status": "error",
-      "checked_on": "2026-11-06",
+      "checked_on": "2026-11-07",
       "reason": "TPEx rows do not cover official trading days (missing=['2026-07-01', '2026-07-02', '2026-07-03', '2026-07-06', '2026-07-07', '2026-07-08', '2026-07-09', '2026-07-13', '2026-07-14', '2026-07-15', '2026-07-16', '2026-07-17', '2026-07-20', '2026-07-21'], unexpected=[])"
     },
     "2026-06": {
       "status": "error",
-      "checked_on": "2026-11-06",
+      "checked_on": "2026-11-07",
       "reason": "TPEx rows do not cover official trading days (missing=['2026-06-11', '2026-06-12', '2026-06-15', '2026-06-16', '2026-06-17', '2026-06-18', '2026-06-22', '2026-06-23', '2026-06-24', '2026-06-25', '2026-06-26', '2026-06-29', '2026-06-30'], unexpected=[])"
     },
     "2026-05": {
@@ -588,7 +593,7 @@
       "sha256": "86526c02b615c3bf18124bf8233397c5b6a0628bd6ce382bbd0f6741616fdad1"
     }
   },
-  "last_attempt": "2026-11-06T14:06:52.629196+08:00",
+  "last_attempt": "2026-11-07T13:54:56.212632+08:00",
   "validation": {
     "issues": [
       "2026-06:unverified_or_missing",
