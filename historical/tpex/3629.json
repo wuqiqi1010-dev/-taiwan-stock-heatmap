@@ -377,19 +377,38 @@
     {
       "date": "2026-11-03",
       "close": 13.2
+    },
+    {
+      "date": "2026-11-09",
+      "close": 12.35
+    },
+    {
+      "date": "2026-11-10",
+      "close": 12.5
     }
   ],
   "errors": [],
   "month_checks": {
     "2026-11": {
       "status": "verified",
-      "checked_on": "2026-11-04",
-      "count": 1,
-      "row_count": 2,
-      "no_trade_days": [],
-      "no_trade_observations": [],
+      "checked_on": "2026-11-10",
+      "count": 3,
+      "row_count": 7,
+      "no_trade_days": [
+        "2026-11-04"
+      ],
+      "no_trade_observations": [
+        {
+          "date": "2026-11-04",
+          "volume": 0,
+          "amount": 0,
+          "trades": 0
+        }
+      ],
       "no_price_days": [
-        "2026-11-02"
+        "2026-11-02",
+        "2026-11-05",
+        "2026-11-06"
       ],
       "no_price_observations": [
         {
@@ -397,15 +416,32 @@
           "volume": 2,
           "amount": 25,
           "trades": 14
+        },
+        {
+          "date": "2026-11-05",
+          "volume": 0,
+          "amount": 0,
+          "trades": 2
+        },
+        {
+          "date": "2026-11-06",
+          "volume": 0,
+          "amount": 2,
+          "trades": 3
         }
       ],
       "trading_days": [
         "2026-11-02",
-        "2026-11-03"
+        "2026-11-03",
+        "2026-11-04",
+        "2026-11-05",
+        "2026-11-06",
+        "2026-11-09",
+        "2026-11-10"
       ],
       "trading_calendar_source": "TPEx official monthly tradingIndex API",
-      "source_rows_sha256": "a4b4be55b40a3802517f55c5ce5be6654908eec72a91b5948f42fa357d9dbfdb",
-      "sha256": "12d9d02dd2fc46c28df16c59845f85130156fbd1c4edbb738961dac6eb475241"
+      "source_rows_sha256": "17995d146ad2a8dbd930aba8c0adf498a6778ed11d0fbd2937b8b0fbdf214eef",
+      "sha256": "85ce5a49a321118445f76960a4e15a3f02bf470c964923827dfb31ebc856b44c"
     },
     "2026-10": {
       "status": "verified",
@@ -858,7 +894,7 @@
       "sha256": "65855cba5c4bb679a09ae28be7d3f7fcdd5ef9f81ece59ab7e0bfa5e3d143efd"
     }
   },
-  "last_attempt": "2026-11-04T14:07:21.042963+08:00",
+  "last_attempt": "2026-11-10T18:58:48.983420+08:00",
   "validation": {
     "issues": [],
     "complete": true
