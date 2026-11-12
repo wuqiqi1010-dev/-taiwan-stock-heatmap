@@ -425,6 +425,10 @@
     {
       "date": "2026-11-09",
       "close": 52.5
+    },
+    {
+      "date": "2026-11-11",
+      "close": 51.4
     }
   ],
   "errors": [
@@ -436,13 +440,14 @@
   "month_checks": {
     "2026-11": {
       "status": "verified",
-      "checked_on": "2026-11-10",
-      "count": 5,
-      "row_count": 6,
+      "checked_on": "2026-11-12",
+      "count": 6,
+      "row_count": 8,
       "no_trade_days": [],
       "no_trade_observations": [],
       "no_price_days": [
-        "2026-11-06"
+        "2026-11-06",
+        "2026-11-10"
       ],
       "no_price_observations": [
         {
@@ -450,6 +455,12 @@
           "volume": 0,
           "amount": 18,
           "trades": 4
+        },
+        {
+          "date": "2026-11-10",
+          "volume": 0,
+          "amount": 0,
+          "trades": 3
         }
       ],
       "trading_days": [
@@ -458,15 +469,17 @@
         "2026-11-04",
         "2026-11-05",
         "2026-11-06",
-        "2026-11-09"
+        "2026-11-09",
+        "2026-11-10",
+        "2026-11-11"
       ],
       "trading_calendar_source": "TPEx official monthly tradingIndex API",
-      "source_rows_sha256": "a31288c5cbee3bb1ce514d6915d0d4a179ee8b3b1e0cccf8d6d12ac89486db2d",
-      "sha256": "a0fb8d3d28947041afcbb8a166ab1d8110c63c0c3df1017a91c07475cc7cda72"
+      "source_rows_sha256": "02d8763c78cd76000142907e8c84f487de29b846f1b0d1605dc36887596cf8b5",
+      "sha256": "e5919f9982592cc6f5344137e3a56b44a3ba993fbb61decabbb7452d11770f79"
     },
     "2026-10": {
       "status": "error",
-      "checked_on": "2026-11-10",
+      "checked_on": "2026-11-12",
       "reason": "TPEx rows do not cover official trading days (missing=['2026-10-15', '2026-10-16', '2026-10-19', '2026-10-20', '2026-10-21', '2026-10-22'], unexpected=[])"
     },
     "2026-09": {
@@ -683,7 +696,7 @@
       "sha256": "f3a58cbb4d75b3808c60bb88b54939b320b1c18c88f666bafe2b0ad24f29be7b"
     }
   },
-  "last_attempt": "2026-11-10T09:12:10.510044+08:00",
+  "last_attempt": "2026-11-12T10:58:39.816245+08:00",
   "validation": {
     "issues": [
       "2026-10:unverified_or_missing",
