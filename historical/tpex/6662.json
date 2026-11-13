@@ -461,17 +461,22 @@
     {
       "date": "2026-11-10",
       "close": 28.4
+    },
+    {
+      "date": "2026-11-13",
+      "close": 28.15
     }
   ],
   "errors": [],
   "month_checks": {
     "2026-11": {
       "status": "verified",
-      "checked_on": "2026-11-11",
-      "count": 6,
-      "row_count": 7,
+      "checked_on": "2026-11-14",
+      "count": 7,
+      "row_count": 10,
       "no_trade_days": [
-        "2026-11-02"
+        "2026-11-02",
+        "2026-11-11"
       ],
       "no_trade_observations": [
         {
@@ -479,10 +484,25 @@
           "volume": 0,
           "amount": 0,
           "trades": 0
+        },
+        {
+          "date": "2026-11-11",
+          "volume": 0,
+          "amount": 0,
+          "trades": 0
         }
       ],
-      "no_price_days": [],
-      "no_price_observations": [],
+      "no_price_days": [
+        "2026-11-12"
+      ],
+      "no_price_observations": [
+        {
+          "date": "2026-11-12",
+          "volume": 0,
+          "amount": 0,
+          "trades": 1
+        }
+      ],
       "trading_days": [
         "2026-11-02",
         "2026-11-03",
@@ -490,11 +510,14 @@
         "2026-11-05",
         "2026-11-06",
         "2026-11-09",
-        "2026-11-10"
+        "2026-11-10",
+        "2026-11-11",
+        "2026-11-12",
+        "2026-11-13"
       ],
       "trading_calendar_source": "TPEx official monthly tradingIndex API",
-      "source_rows_sha256": "7c38735fdd86382b5b91e9259125edbfcad5dcd662049d7017ad5450a9e236a6",
-      "sha256": "d77b666faaa13f58a6ab4b20366f4ae123d780ee83260809e907987da9f6f448"
+      "source_rows_sha256": "8d3a2282eb1b3cc7cb2d7afb21221298977176bfe56224d741f52b84a706086d",
+      "sha256": "682a3351ebf01ef1323f9be630d8bc17bd4f1fbf69b56ef0bafbee668b346984"
     },
     "2026-10": {
       "status": "verified",
@@ -827,7 +850,7 @@
       "sha256": "b86eb7551ad9a28e3207feb44dcbdc963cba807f487309f03a8caeca669852e2"
     }
   },
-  "last_attempt": "2026-11-11T05:49:48.161271+08:00",
+  "last_attempt": "2026-11-14T07:48:05.063305+08:00",
   "validation": {
     "issues": [],
     "complete": true
