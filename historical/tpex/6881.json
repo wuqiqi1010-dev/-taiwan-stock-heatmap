@@ -461,25 +461,47 @@
     {
       "date": "2026-11-12",
       "close": 217.5
+    },
+    {
+      "date": "2026-11-17",
+      "close": 217.5
+    },
+    {
+      "date": "2026-11-18",
+      "close": 212.0
     }
   ],
   "errors": [],
   "month_checks": {
     "2026-11": {
       "status": "verified",
-      "checked_on": "2026-11-13",
-      "count": 8,
-      "row_count": 9,
+      "checked_on": "2026-11-18",
+      "count": 10,
+      "row_count": 13,
       "no_trade_days": [],
       "no_trade_observations": [],
       "no_price_days": [
-        "2026-11-02"
+        "2026-11-02",
+        "2026-11-13",
+        "2026-11-16"
       ],
       "no_price_observations": [
         {
           "date": "2026-11-02",
           "volume": 0,
           "amount": 22,
+          "trades": 4
+        },
+        {
+          "date": "2026-11-13",
+          "volume": 0,
+          "amount": 13,
+          "trades": 8
+        },
+        {
+          "date": "2026-11-16",
+          "volume": 0,
+          "amount": 9,
           "trades": 4
         }
       ],
@@ -492,11 +514,15 @@
         "2026-11-09",
         "2026-11-10",
         "2026-11-11",
-        "2026-11-12"
+        "2026-11-12",
+        "2026-11-13",
+        "2026-11-16",
+        "2026-11-17",
+        "2026-11-18"
       ],
       "trading_calendar_source": "TPEx official monthly tradingIndex API",
-      "source_rows_sha256": "a1344f70535e07b9ac3824bed1e58cde75ffa270ca564e1fa2785056ec1c4df8",
-      "sha256": "9acad2f89f33cb2a8ece02640a346a0305cd81281888f8f6cf399e4c94a3d2ee"
+      "source_rows_sha256": "4c8c7ded28f0fb72f2f4b0bd7b47c12090eb6061454c2c6f2c81f4143d3e9798",
+      "sha256": "27d1b680f4375b8b8b0cbf47539a3acd448571ee20c345eebf3866b0dd8a1193"
     },
     "2026-10": {
       "status": "verified",
@@ -841,7 +867,7 @@
       "sha256": "cb69cea38814e4028521c2efb7828e20020d0e2738309bfe9553659b96e28a97"
     }
   },
-  "last_attempt": "2026-11-13T09:18:01.345114+08:00",
+  "last_attempt": "2026-11-18T20:07:30.721029+08:00",
   "validation": {
     "issues": [],
     "complete": true

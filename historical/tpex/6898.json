@@ -53,6 +53,10 @@
     {
       "date": "2026-11-17",
       "close": 65.6
+    },
+    {
+      "date": "2026-11-18",
+      "close": 62.7
     }
   ],
   "errors": [
@@ -84,9 +88,9 @@
   "month_checks": {
     "2026-11": {
       "status": "verified",
-      "checked_on": "2026-11-17",
-      "count": 12,
-      "row_count": 12,
+      "checked_on": "2026-11-18",
+      "count": 13,
+      "row_count": 13,
       "no_trade_days": [],
       "no_trade_observations": [],
       "no_price_days": [],
@@ -103,44 +107,45 @@
         "2026-11-12",
         "2026-11-13",
         "2026-11-16",
-        "2026-11-17"
+        "2026-11-17",
+        "2026-11-18"
       ],
       "trading_calendar_source": "TPEx official monthly tradingIndex API",
-      "source_rows_sha256": "795d4f3cc0f6b29cdb07b649f4c7395b747c536663dafcbd5f62f1187057b19a",
-      "sha256": "630703f4d7db1c5008a5f51abcb5c0feda801ce0bae6b36ef0546a63d40e1efa"
+      "source_rows_sha256": "62b8696b42882f776f0fe6c52786bd50ae784a90203609567454430da83bb5ee",
+      "sha256": "be0944e38d10abb5c4d65b605b048f5b48432811c893214aded307d1d827e4e8"
     },
     "2026-10": {
       "status": "error",
-      "checked_on": "2026-11-17",
+      "checked_on": "2026-11-18",
       "reason": "TPEx rows do not cover official trading days (missing=['2026-10-01', '2026-10-02', '2026-10-05', '2026-10-06', '2026-10-07', '2026-10-08', '2026-10-12', '2026-10-13', '2026-10-14', '2026-10-15', '2026-10-16', '2026-10-19', '2026-10-20', '2026-10-21', '2026-10-22'], unexpected=[])"
     },
     "2026-09": {
       "status": "error",
-      "checked_on": "2026-11-17",
+      "checked_on": "2026-11-18",
       "reason": "Empty TPEx monthly response; requires review"
     },
     "2026-08": {
       "status": "error",
-      "checked_on": "2026-11-17",
+      "checked_on": "2026-11-18",
       "reason": "Empty TPEx monthly response; requires review"
     },
     "2026-07": {
       "status": "error",
-      "checked_on": "2026-11-17",
+      "checked_on": "2026-11-18",
       "reason": "Empty TPEx monthly response; requires review"
     },
     "2026-06": {
       "status": "error",
-      "checked_on": "2026-11-17",
+      "checked_on": "2026-11-18",
       "reason": "Empty TPEx monthly response; requires review"
     },
     "2026-05": {
       "status": "error",
-      "checked_on": "2026-11-17",
+      "checked_on": "2026-11-18",
       "reason": "Empty TPEx monthly response; requires review"
     }
   },
-  "last_attempt": "2026-11-17T15:29:32.179464+08:00",
+  "last_attempt": "2026-11-18T20:07:39.294541+08:00",
   "validation": {
     "issues": [
       "2026-05:unverified_or_missing",
