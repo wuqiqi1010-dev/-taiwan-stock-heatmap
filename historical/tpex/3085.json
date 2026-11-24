@@ -361,6 +361,10 @@
     {
       "date": "2026-11-19",
       "close": 14.5
+    },
+    {
+      "date": "2026-11-23",
+      "close": 14.5
     }
   ],
   "errors": [
@@ -372,9 +376,9 @@
   "month_checks": {
     "2026-11": {
       "status": "verified",
-      "checked_on": "2026-11-20",
-      "count": 6,
-      "row_count": 14,
+      "checked_on": "2026-11-24",
+      "count": 7,
+      "row_count": 17,
       "no_trade_days": [],
       "no_trade_observations": [],
       "no_price_days": [
@@ -385,7 +389,9 @@
         "2026-11-09",
         "2026-11-10",
         "2026-11-11",
-        "2026-11-17"
+        "2026-11-17",
+        "2026-11-20",
+        "2026-11-24"
       ],
       "no_price_observations": [
         {
@@ -435,6 +441,18 @@
           "volume": 0,
           "amount": 1,
           "trades": 2
+        },
+        {
+          "date": "2026-11-20",
+          "volume": 0,
+          "amount": 4,
+          "trades": 3
+        },
+        {
+          "date": "2026-11-24",
+          "volume": 0,
+          "amount": 3,
+          "trades": 5
         }
       ],
       "trading_days": [
@@ -451,15 +469,18 @@
         "2026-11-16",
         "2026-11-17",
         "2026-11-18",
-        "2026-11-19"
+        "2026-11-19",
+        "2026-11-20",
+        "2026-11-23",
+        "2026-11-24"
       ],
       "trading_calendar_source": "TPEx official monthly tradingIndex API",
-      "source_rows_sha256": "21e691cdeb167bb373162a2a16911323d37cbf7aacd550a283def34860cd9653",
-      "sha256": "df1eb9d9e127412d85cc918462ac276561bfa923654b88243db500906fe8b705"
+      "source_rows_sha256": "3d50a0590cfa8cd70cf44cb47789e73d29db3f6ed68642f70ecaea8291743b49",
+      "sha256": "c0854b102549ca974debde7597d764e2c52f0e82976385f10094be67d8f8967b"
     },
     "2026-10": {
       "status": "error",
-      "checked_on": "2026-11-20",
+      "checked_on": "2026-11-24",
       "reason": "TPEx rows do not cover official trading days (missing=['2026-10-01', '2026-10-02', '2026-10-05', '2026-10-06', '2026-10-07', '2026-10-08'], unexpected=[])"
     },
     "2026-09": {
@@ -799,7 +820,7 @@
       "sha256": "effcbbbff625f39a0dd1fa6f501aba28f66a97ae5a2c82d4f15431207022c4c2"
     }
   },
-  "last_attempt": "2026-11-20T05:58:51.499703+08:00",
+  "last_attempt": "2026-11-24T21:27:44.408063+08:00",
   "validation": {
     "issues": [
       "2026-10:unverified_or_missing",
