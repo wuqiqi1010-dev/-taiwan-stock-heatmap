@@ -405,21 +405,46 @@
     {
       "date": "2026-11-18",
       "close": 10.95
+    },
+    {
+      "date": "2026-11-24",
+      "close": 10.1
     }
   ],
   "errors": [],
   "month_checks": {
     "2026-11": {
       "status": "verified",
-      "checked_on": "2026-11-19",
-      "count": 8,
-      "row_count": 13,
+      "checked_on": "2026-11-25",
+      "count": 9,
+      "row_count": 17,
       "no_trade_days": [
-        "2026-11-04"
+        "2026-11-04",
+        "2026-11-19",
+        "2026-11-20",
+        "2026-11-23"
       ],
       "no_trade_observations": [
         {
           "date": "2026-11-04",
+          "volume": 0,
+          "amount": 0,
+          "trades": 0
+        },
+        {
+          "date": "2026-11-19",
+          "volume": 0,
+          "amount": 0,
+          "trades": 0
+        },
+        {
+          "date": "2026-11-20",
+          "volume": 0,
+          "amount": 0,
+          "trades": 0
+        },
+        {
+          "date": "2026-11-23",
           "volume": 0,
           "amount": 0,
           "trades": 0
@@ -470,11 +495,15 @@
         "2026-11-13",
         "2026-11-16",
         "2026-11-17",
-        "2026-11-18"
+        "2026-11-18",
+        "2026-11-19",
+        "2026-11-20",
+        "2026-11-23",
+        "2026-11-24"
       ],
       "trading_calendar_source": "TPEx official monthly tradingIndex API",
-      "source_rows_sha256": "cd5513b6ab8732df5a4cce2791b5e6c7429bc1beecc9db766d83faf9a016040d",
-      "sha256": "5d5f944a7a5dd0da28416d12fe1bd299696b7a7c93f6173a433c273555835572"
+      "source_rows_sha256": "49c45b056e0a8f1d89253d53016585a8715787d57c562c95c15b1c53a9163dc6",
+      "sha256": "13b66529faa009a2f601ffbe4228aa5b660a90919faed1697ce9195042fb2f31"
     },
     "2026-10": {
       "status": "verified",
@@ -927,7 +956,7 @@
       "sha256": "65855cba5c4bb679a09ae28be7d3f7fcdd5ef9f81ece59ab7e0bfa5e3d143efd"
     }
   },
-  "last_attempt": "2026-11-19T06:59:54.843342+08:00",
+  "last_attempt": "2026-11-25T02:01:00.300544+08:00",
   "validation": {
     "issues": [],
     "complete": true
