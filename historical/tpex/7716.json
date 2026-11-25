@@ -429,18 +429,27 @@
     {
       "date": "2026-11-18",
       "close": 23.3
+    },
+    {
+      "date": "2026-11-24",
+      "close": 22.85
+    },
+    {
+      "date": "2026-11-25",
+      "close": 22.25
     }
   ],
   "errors": [],
   "month_checks": {
     "2026-11": {
       "status": "verified",
-      "checked_on": "2026-11-18",
-      "count": 11,
-      "row_count": 13,
+      "checked_on": "2026-11-25",
+      "count": 13,
+      "row_count": 18,
       "no_trade_days": [
         "2026-11-05",
-        "2026-11-09"
+        "2026-11-09",
+        "2026-11-23"
       ],
       "no_trade_observations": [
         {
@@ -454,10 +463,32 @@
           "volume": 0,
           "amount": 0,
           "trades": 0
+        },
+        {
+          "date": "2026-11-23",
+          "volume": 0,
+          "amount": 0,
+          "trades": 0
         }
       ],
-      "no_price_days": [],
-      "no_price_observations": [],
+      "no_price_days": [
+        "2026-11-19",
+        "2026-11-20"
+      ],
+      "no_price_observations": [
+        {
+          "date": "2026-11-19",
+          "volume": 0,
+          "amount": 1,
+          "trades": 1
+        },
+        {
+          "date": "2026-11-20",
+          "volume": 0,
+          "amount": 3,
+          "trades": 2
+        }
+      ],
       "trading_days": [
         "2026-11-02",
         "2026-11-03",
@@ -471,11 +502,16 @@
         "2026-11-13",
         "2026-11-16",
         "2026-11-17",
-        "2026-11-18"
+        "2026-11-18",
+        "2026-11-19",
+        "2026-11-20",
+        "2026-11-23",
+        "2026-11-24",
+        "2026-11-25"
       ],
       "trading_calendar_source": "TPEx official monthly tradingIndex API",
-      "source_rows_sha256": "a3db4d7ecbf6d97beec939bb5f0962201cba08fe5b203a74accc15335e52e308",
-      "sha256": "74e83b3af202feaa53d566b14ecfa21215599b73f480d5e231bd00751cf00a1f"
+      "source_rows_sha256": "17c99044678a8d3a7ea41b7a925841b861ecf7fb95caf5bcd5077ccaf616322d",
+      "sha256": "047bd18ad18d4ec2583d3d7865114dc6bf4e2111518637ecc266f9f2ef7a277e"
     },
     "2026-10": {
       "status": "verified",
@@ -905,7 +941,7 @@
       "sha256": "25d800bf0456e353e9ee91afd097134751479b5d0e95eb92334fca07bcfb4cb8"
     }
   },
-  "last_attempt": "2026-11-18T21:24:37.645931+08:00",
+  "last_attempt": "2026-11-25T19:09:13.179222+08:00",
   "validation": {
     "issues": [],
     "complete": true

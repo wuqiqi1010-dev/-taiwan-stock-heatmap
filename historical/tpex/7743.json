@@ -509,19 +509,41 @@
     {
       "date": "2026-11-20",
       "close": 19.0
+    },
+    {
+      "date": "2026-11-24",
+      "close": 20.4
     }
   ],
   "errors": [],
   "month_checks": {
     "2026-11": {
       "status": "verified",
-      "checked_on": "2026-11-23",
-      "count": 15,
-      "row_count": 15,
-      "no_trade_days": [],
-      "no_trade_observations": [],
-      "no_price_days": [],
-      "no_price_observations": [],
+      "checked_on": "2026-11-25",
+      "count": 16,
+      "row_count": 18,
+      "no_trade_days": [
+        "2026-11-25"
+      ],
+      "no_trade_observations": [
+        {
+          "date": "2026-11-25",
+          "volume": 0,
+          "amount": 0,
+          "trades": 0
+        }
+      ],
+      "no_price_days": [
+        "2026-11-23"
+      ],
+      "no_price_observations": [
+        {
+          "date": "2026-11-23",
+          "volume": 0,
+          "amount": 3,
+          "trades": 1
+        }
+      ],
       "trading_days": [
         "2026-11-02",
         "2026-11-03",
@@ -537,11 +559,14 @@
         "2026-11-17",
         "2026-11-18",
         "2026-11-19",
-        "2026-11-20"
+        "2026-11-20",
+        "2026-11-23",
+        "2026-11-24",
+        "2026-11-25"
       ],
       "trading_calendar_source": "TPEx official monthly tradingIndex API",
-      "source_rows_sha256": "5f94af4c9c765302ef2d6ff0652b86e26b9f4c9b1ca29dc3668d0336c7efbb57",
-      "sha256": "fc9e35602c979cab3a1bb32449613b02115230b84397776b6ff5f2daf4dc2d49"
+      "source_rows_sha256": "501ae321c1897bf1e539e1e6e57c34ea82a4943d4d02f59879a72a50394a135b",
+      "sha256": "24dd0756077e8b025ae68854175336ed5bd0e7354846e72b5a95c06943690614"
     },
     "2026-10": {
       "status": "verified",
@@ -851,7 +876,7 @@
       "sha256": "7b2ccd1465163c7bf857ae4199441eae1346a785d23448e8144ddc3018c24d77"
     }
   },
-  "last_attempt": "2026-11-23T05:53:18.578122+08:00",
+  "last_attempt": "2026-11-25T19:10:10.149793+08:00",
   "validation": {
     "issues": [],
     "complete": true
