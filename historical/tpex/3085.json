@@ -365,6 +365,10 @@
     {
       "date": "2026-11-23",
       "close": 14.5
+    },
+    {
+      "date": "2026-11-26",
+      "close": 14.5
     }
   ],
   "errors": [
@@ -376,9 +380,9 @@
   "month_checks": {
     "2026-11": {
       "status": "verified",
-      "checked_on": "2026-11-24",
-      "count": 7,
-      "row_count": 17,
+      "checked_on": "2026-11-27",
+      "count": 8,
+      "row_count": 19,
       "no_trade_days": [],
       "no_trade_observations": [],
       "no_price_days": [
@@ -391,7 +395,8 @@
         "2026-11-11",
         "2026-11-17",
         "2026-11-20",
-        "2026-11-24"
+        "2026-11-24",
+        "2026-11-25"
       ],
       "no_price_observations": [
         {
@@ -453,6 +458,12 @@
           "volume": 0,
           "amount": 3,
           "trades": 5
+        },
+        {
+          "date": "2026-11-25",
+          "volume": 0,
+          "amount": 0,
+          "trades": 1
         }
       ],
       "trading_days": [
@@ -472,15 +483,17 @@
         "2026-11-19",
         "2026-11-20",
         "2026-11-23",
-        "2026-11-24"
+        "2026-11-24",
+        "2026-11-25",
+        "2026-11-26"
       ],
       "trading_calendar_source": "TPEx official monthly tradingIndex API",
-      "source_rows_sha256": "3d50a0590cfa8cd70cf44cb47789e73d29db3f6ed68642f70ecaea8291743b49",
-      "sha256": "c0854b102549ca974debde7597d764e2c52f0e82976385f10094be67d8f8967b"
+      "source_rows_sha256": "8bbd40f81d5b1a24e82e9e1ce4f0ccca5784c0839836290985bb8ca6e7a090c5",
+      "sha256": "e45e6bd33413a92cea03798243704735206f00c1dcf59eceb78c25f4070a4a78"
     },
     "2026-10": {
       "status": "error",
-      "checked_on": "2026-11-24",
+      "checked_on": "2026-11-27",
       "reason": "TPEx rows do not cover official trading days (missing=['2026-10-01', '2026-10-02', '2026-10-05', '2026-10-06', '2026-10-07', '2026-10-08'], unexpected=[])"
     },
     "2026-09": {
@@ -820,7 +833,7 @@
       "sha256": "effcbbbff625f39a0dd1fa6f501aba28f66a97ae5a2c82d4f15431207022c4c2"
     }
   },
-  "last_attempt": "2026-11-24T21:27:44.408063+08:00",
+  "last_attempt": "2026-11-27T05:11:59.043636+08:00",
   "validation": {
     "issues": [
       "2026-10:unverified_or_missing",
