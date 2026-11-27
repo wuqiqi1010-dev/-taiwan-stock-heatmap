@@ -397,6 +397,14 @@
     {
       "date": "2026-11-25",
       "close": 68.7
+    },
+    {
+      "date": "2026-11-26",
+      "close": 69.6
+    },
+    {
+      "date": "2026-11-27",
+      "close": 68.7
     }
   ],
   "errors": [
@@ -412,9 +420,9 @@
   "month_checks": {
     "2026-11": {
       "status": "verified",
-      "checked_on": "2026-11-26",
-      "count": 18,
-      "row_count": 18,
+      "checked_on": "2026-11-27",
+      "count": 20,
+      "row_count": 20,
       "no_trade_days": [],
       "no_trade_observations": [],
       "no_price_days": [],
@@ -437,11 +445,13 @@
         "2026-11-20",
         "2026-11-23",
         "2026-11-24",
-        "2026-11-25"
+        "2026-11-25",
+        "2026-11-26",
+        "2026-11-27"
       ],
       "trading_calendar_source": "TPEx official monthly tradingIndex API",
-      "source_rows_sha256": "eb2c252dc1493f5a1dcdba34afd0c552340b8e678feda586a471554e44aedd4e",
-      "sha256": "b23989b720aa70ea3dedf1afaecadcba567acab62dc9955fd2ad44e516a6cf1f"
+      "source_rows_sha256": "82bf1db943eb2f28bfa666e3dd8291ade4c006855dc4b102282c2ee1e60bc068",
+      "sha256": "919e78a23b506890f3d3dfcaa843516c4a9d804190f8de18b32d03bae559e29e"
     },
     "2026-10": {
       "status": "verified",
@@ -514,12 +524,12 @@
     },
     "2026-08": {
       "status": "error",
-      "checked_on": "2026-11-26",
+      "checked_on": "2026-11-27",
       "reason": "TPEx rows do not cover official trading days (missing=['2026-08-03', '2026-08-04', '2026-08-05', '2026-08-06', '2026-08-07'], unexpected=[])"
     },
     "2026-07": {
       "status": "error",
-      "checked_on": "2026-11-26",
+      "checked_on": "2026-11-27",
       "reason": "TPEx rows do not cover official trading days (missing=['2026-07-30', '2026-07-31'], unexpected=[])"
     },
     "2026-06": {
@@ -594,7 +604,7 @@
       "sha256": "9634e276cbdf61d73df31e43636d6065eae5267c3a207b6db9557ae8bf9836ca"
     }
   },
-  "last_attempt": "2026-11-26T13:25:46.254784+08:00",
+  "last_attempt": "2026-11-27T19:03:10.161921+08:00",
   "validation": {
     "issues": [
       "2026-07:unverified_or_missing",

@@ -349,22 +349,32 @@
     {
       "date": "2026-11-23",
       "close": 11.95
+    },
+    {
+      "date": "2026-11-26",
+      "close": 12.2
+    },
+    {
+      "date": "2026-11-27",
+      "close": 12.6
     }
   ],
   "errors": [],
   "month_checks": {
     "2026-11": {
       "status": "verified",
-      "checked_on": "2026-11-24",
-      "count": 6,
-      "row_count": 16,
+      "checked_on": "2026-11-27",
+      "count": 8,
+      "row_count": 20,
       "no_trade_days": [
         "2026-11-02",
         "2026-11-03",
         "2026-11-09",
         "2026-11-16",
         "2026-11-17",
-        "2026-11-18"
+        "2026-11-18",
+        "2026-11-24",
+        "2026-11-25"
       ],
       "no_trade_observations": [
         {
@@ -399,6 +409,18 @@
         },
         {
           "date": "2026-11-18",
+          "volume": 0,
+          "amount": 0,
+          "trades": 0
+        },
+        {
+          "date": "2026-11-24",
+          "volume": 0,
+          "amount": 0,
+          "trades": 0
+        },
+        {
+          "date": "2026-11-25",
           "volume": 0,
           "amount": 0,
           "trades": 0
@@ -452,11 +474,15 @@
         "2026-11-18",
         "2026-11-19",
         "2026-11-20",
-        "2026-11-23"
+        "2026-11-23",
+        "2026-11-24",
+        "2026-11-25",
+        "2026-11-26",
+        "2026-11-27"
       ],
       "trading_calendar_source": "TPEx official monthly tradingIndex API",
-      "source_rows_sha256": "d9db512faaed5ff580cffe7f103bf2a3767ef405e02fe15a0f4ab1be46a313ab",
-      "sha256": "34e2b210a218675167ae359d3ae8e75a63385e2aae642dc5b089f332cac10fcc"
+      "source_rows_sha256": "28e11fdc16fd4f0699bfdd8bb1349222cc4a00e7802c119ebe3681638ef21a09",
+      "sha256": "61b8789515ef3af0014015e99d648a6837f34cfc9f8ae415491bc71e7cecd999"
     },
     "2026-10": {
       "status": "verified",
@@ -997,7 +1023,7 @@
       "sha256": "1d80d5e9d9a91b6cee08f6f3551b499572b1940ebd110850b49e9946c00a1265"
     }
   },
-  "last_attempt": "2026-11-24T05:06:42.268634+08:00",
+  "last_attempt": "2026-11-27T19:02:36.290092+08:00",
   "validation": {
     "issues": [],
     "complete": true
